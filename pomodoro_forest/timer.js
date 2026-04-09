@@ -256,8 +256,8 @@ class PomodoroTimer {
         this.container.classList.add('running');
         this.interval = setInterval(() => this._tick(), 1000);
 
-        // Resume lofi if we're in a break and it was playing
-        if (this._isBreak() && this.settings.lofi) {
+        // Lofi can play in any timer mode when enabled
+        if (this.settings.lofi) {
             this.lofi.play();
         }
     }
@@ -333,10 +333,6 @@ class PomodoroTimer {
             btn.classList.toggle('active', btn.dataset.mode === mode)
         );
         this._reset();
-    }
-
-    _isBreak() {
-        return this.mode === 'short' || this.mode === 'long';
     }
 
     // ── Mute ───────────────────────────────────────────────────────────────────
