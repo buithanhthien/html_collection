@@ -1,0 +1,484 @@
+/* =============================================
+   Reset & base
+   ============================================= */
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --accent: #ffffff;
+  --accent-dim: rgba(255,255,255,0.65);
+  --accent-ghost: rgba(255,255,255,0.10);
+  --border: rgba(255,255,255,0.14);
+  --card-bg: rgba(10,10,20,0.55);
+  --ring-color: #ffffff;
+  --ring-bg: rgba(255,255,255,0.12);
+  --btn-primary-bg: rgba(255,255,255,0.95);
+  --btn-primary-fg: #0a0a14;
+  --btn-secondary-bg: rgba(255,255,255,0.08);
+  --btn-secondary-fg: rgba(255,255,255,0.85);
+  --mode-active-bg: rgba(255,255,255,0.14);
+  --mode-active-fg: #ffffff;
+  --mode-idle-fg: rgba(255,255,255,0.50);
+  --tag-work: #e07b54;
+  --tag-break: #54a8e0;
+}
+
+[data-theme="light"] {
+  --accent: #1a1a2e;
+  --accent-dim: rgba(26,26,46,0.65);
+  --accent-ghost: rgba(26,26,46,0.08);
+  --border: rgba(26,26,46,0.14);
+  --card-bg: rgba(240,244,255,0.65);
+  --ring-color: #2d3561;
+  --ring-bg: rgba(26,26,46,0.12);
+  --btn-primary-bg: rgba(26,26,46,0.90);
+  --btn-primary-fg: #eef4ff;
+  --btn-secondary-bg: rgba(26,26,46,0.08);
+  --btn-secondary-fg: rgba(26,26,46,0.80);
+  --mode-active-bg: rgba(26,26,46,0.12);
+  --mode-active-fg: #1a1a2e;
+  --mode-idle-fg: rgba(26,26,46,0.45);
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: #0a0a0f;
+  color: var(--accent);
+  line-height: 1.6;
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+[data-theme="light"] body {
+  background: #eef4ff;
+}
+
+/* =============================================
+   Canvas
+   ============================================= */
+#webgl_canvas {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+}
+
+/* =============================================
+   HUD — top left
+   ============================================= */
+#hud {
+  position: fixed;
+  top: 1.75rem;
+  left: 2rem;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.scene-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--accent-dim);
+}
+
+.progress-bar {
+  width: 110px;
+  height: 3px;
+  background: var(--ring-bg);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 2px;
+  width: 0%;
+  transition: width 0.5s ease;
+}
+
+/* =============================================
+   Theme toggle — top right
+   ============================================= */
+#theme_toggle {
+  position: fixed;
+  top: 1.75rem;
+  right: 2rem;
+  z-index: 20;
+  background: var(--accent-ghost);
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  width: 2.75rem;
+  height: 2.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(12px);
+  color: var(--accent);
+}
+
+#theme_toggle:hover {
+  background: var(--mode-active-bg);
+  transform: scale(1.08);
+}
+
+.icon-sun, .icon-moon {
+  width: 1.1rem;
+  height: 1.1rem;
+  transition: opacity 0.3s ease;
+  position: absolute;
+}
+
+/* dark mode shows sun (to switch to light), light mode shows moon */
+.icon-sun  { opacity: 1; }
+.icon-moon { opacity: 0; }
+
+[data-theme="light"] .icon-sun  { opacity: 0; }
+[data-theme="light"] .icon-moon { opacity: 1; }
+
+/* =============================================
+   Scene dots — bottom center
+   ============================================= */
+#scene_strip {
+  position: fixed;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 20;
+  display: flex;
+  gap: 0.55rem;
+  align-items: center;
+}
+
+.scene-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--ring-bg);
+  border: 1px solid var(--border);
+  transition: all 0.35s ease;
+  cursor: default;
+}
+
+.scene-dot.active {
+  background: var(--accent);
+  transform: scale(1.55);
+  border-color: transparent;
+}
+
+/* =============================================
+   Timer container — center stage
+   ============================================= */
+#timer_container {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+/* =============================================
+   Timer card
+   ============================================= */
+.timer-card {
+  pointer-events: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 2.5rem 3rem 2rem;
+  background: var(--card-bg);
+  backdrop-filter: blur(28px) saturate(160%);
+  border: 1px solid var(--border);
+  border-radius: 2rem;
+  box-shadow: 0 24px 64px rgba(0,0,0,0.45), 0 0 0 1px rgba(255,255,255,0.04) inset;
+  min-width: 340px;
+  transition: background 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
+  user-select: none;
+}
+
+/* =============================================
+   Mode tag
+   ============================================= */
+.mode-tag {
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  padding: 0.3rem 0.85rem;
+  border-radius: 100px;
+  background: var(--accent-ghost);
+  border: 1px solid var(--border);
+  color: var(--accent-dim);
+  transition: all 0.4s ease;
+}
+
+.mode-tag.work  { color: var(--tag-work);  border-color: rgba(224,123,84,0.3);  background: rgba(224,123,84,0.10); }
+.mode-tag.break { color: var(--tag-break); border-color: rgba(84,168,224,0.3); background: rgba(84,168,224,0.10); }
+
+/* =============================================
+   Ring + timer display
+   ============================================= */
+#timer_ring_wrap {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#timer_ring {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.ring-bg {
+  fill: none;
+  stroke: var(--ring-bg);
+  stroke-width: 6;
+}
+
+.ring-fill {
+  fill: none;
+  stroke: var(--ring-color);
+  stroke-width: 6;
+  stroke-linecap: round;
+  stroke-dasharray: 553;   /* 2π × 88 ≈ 552.9 */
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset 0.9s ease, stroke 0.6s ease;
+}
+
+.ring-fill.work  { stroke: white; }
+.ring-fill.break { stroke: #7ec8e3; }
+
+.timer-display {
+  font-size: 3.2rem;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.03em;
+  color: var(--accent);
+  position: relative;
+  z-index: 1;
+  transition: color 0.4s ease, opacity 0.15s ease;
+}
+
+/* When timer is paused and editable */
+.timer-display.editable {
+  cursor: text;
+  opacity: 0.85;
+}
+.timer-display.editable:hover {
+  opacity: 0.55;
+}
+
+/* Inline edit input — replaces display when editing */
+.timer-input {
+  display: none;                          /* hidden by default */
+  position: relative;
+  z-index: 2;
+  width: 140px;
+  font-family: inherit;
+  font-size: 3.2rem;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.03em;
+  text-align: center;
+  color: var(--accent);
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid var(--accent);
+  outline: none;
+  caret-color: var(--accent);
+  padding: 0 0 0.1em;
+  transition: border-color 0.2s ease;
+}
+
+.timer-input:focus {
+  border-bottom-color: var(--tag-work);
+}
+
+/* Show input, hide display while editing */
+#timer_ring_wrap.editing .timer-display { display: none; }
+#timer_ring_wrap.editing .timer-input   { display: block; }
+
+/* Edit hint */
+.edit-hint {
+  font-size: 0.62rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--mode-idle-fg);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+  margin-top: -0.5rem;
+}
+
+/* Show the hint when the card is hovered and timer is paused */
+.timer-card:hover .edit-hint { opacity: 1; }
+/* Hide when timer is running */
+.timer-card.running .edit-hint { display: none; }
+
+/* =============================================
+   Session counter
+   ============================================= */
+.session-counter {
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  color: var(--mode-idle-fg);
+  text-transform: uppercase;
+}
+
+/* =============================================
+   Control buttons
+   ============================================= */
+.timer-controls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.ctrl-btn {
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  outline: none;
+}
+
+.ctrl-btn:active {
+  transform: scale(0.93);
+}
+
+/* Primary — play/pause */
+.ctrl-primary {
+  width: 4rem;
+  height: 4rem;
+  background: var(--btn-primary-bg);
+  color: var(--btn-primary-fg);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+}
+
+.ctrl-primary:hover {
+  transform: scale(1.08);
+  box-shadow: 0 6px 28px rgba(0,0,0,0.45);
+}
+
+.ctrl-primary svg {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+/* Secondary — reset / skip */
+.ctrl-secondary {
+  width: 3rem;
+  height: 3rem;
+  background: var(--btn-secondary-bg);
+  color: var(--btn-secondary-fg);
+  border: 1px solid var(--border);
+  backdrop-filter: blur(8px);
+}
+
+.ctrl-secondary:hover {
+  background: var(--mode-active-bg);
+  transform: scale(1.08);
+}
+
+.ctrl-secondary svg {
+  width: 1.1rem;
+  height: 1.1rem;
+}
+
+/* play/pause icon toggle */
+.ctrl-primary .icon-pause { display: none; }
+.ctrl-primary.running .icon-play  { display: none; }
+.ctrl-primary.running .icon-pause { display: block; }
+
+/* =============================================
+   Mode switcher
+   ============================================= */
+.mode-switcher {
+  display: flex;
+  gap: 0.35rem;
+  background: var(--accent-ghost);
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  padding: 0.3rem;
+}
+
+.mode-btn {
+  border: none;
+  border-radius: 100px;
+  padding: 0.38rem 0.9rem;
+  font-family: inherit;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  cursor: pointer;
+  color: var(--mode-idle-fg);
+  background: transparent;
+  transition: all 0.25s ease;
+  white-space: nowrap;
+}
+
+.mode-btn.active {
+  background: var(--mode-active-bg);
+  color: var(--mode-active-fg);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+}
+
+.mode-btn:hover:not(.active) {
+  color: var(--accent-dim);
+}
+
+/* =============================================
+   Responsive
+   ============================================= */
+@media (max-width: 480px) {
+  #hud { left: 1rem; top: 1rem; }
+  #theme_toggle { right: 1rem; top: 1rem; }
+
+  .timer-card {
+    padding: 2rem 1.75rem 1.75rem;
+    min-width: 0;
+    width: calc(100vw - 2.5rem);
+    border-radius: 1.5rem;
+  }
+
+  #timer_ring_wrap {
+    width: 170px;
+    height: 170px;
+  }
+
+  .timer-display { font-size: 2.6rem; }
+
+  .mode-btn {
+    font-size: 0.6rem;
+    padding: 0.3rem 0.65rem;
+  }
+}
