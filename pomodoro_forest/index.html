@@ -259,11 +259,6 @@
             </svg>
             <span class="widget-title">Music</span>
             <div class="widget-header-actions">
-                <button class="music-refresh-btn" id="btnRefresh" title="Refresh music list">
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/>
-                    </svg>
-                </button>
                 <button class="widget-close-btn" data-target="widgetMusic" aria-label="Close Music">
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
                 </button>
@@ -278,8 +273,6 @@
                 </button>
             </div>
 
-            <ul class="music-list" id="musicList"></ul>
-
             <!-- Player controls -->
             <div class="music-player" id="musicPlayer" style="display:none">
                 <div class="now-playing">
@@ -291,15 +284,9 @@
                     <span class="time-total" id="timeTotal">0:00</span>
                 </div>
                 <div class="player-controls">
-                    <button class="control-btn" id="btnPrev" title="Previous">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M6 6h2v12H6zm3.5 6 8.5 6V6z"/></svg>
-                    </button>
                     <button class="control-btn control-play" id="btnPlayPause" title="Play/Pause">
                         <svg class="play-icon" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
                         <svg class="pause-icon" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" style="display:none"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
-                    </button>
-                    <button class="control-btn" id="btnNext" title="Next">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M16 18h2V6h-2zm-11-6 8.5-6v12z"/></svg>
                     </button>
                     <div class="volume-control">
                         <button class="control-btn" id="btnVolume" title="Volume">
