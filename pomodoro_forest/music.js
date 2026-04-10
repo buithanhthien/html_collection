@@ -162,8 +162,28 @@ function updateUI() {
     });
 }
 
-// Event listeners
-btnPlayPause.addEventListener('click', togglePlayPause);
+// YouTube URL player
+const ytUrlInput = document.getElementById('ytUrlInput');
+const btnYtPlay = document.getElementById('btnYtPlay');
+const ytContainer = document.getElementById('ytContainer');
+const ytFrame = document.getElementById('ytFrame');
+
+function extractYtId(url) {
+    const m = url.match(/(?:v=|youtu\.be\/|embed\/)([A-Za-z0-9_-]{11})/);
+    return m ? m[1] : null;
+}
+
+function loadYoutube() {
+    const id = extractYtId(ytUrlInput.value.trim());
+    if (!id) return;
+    ytFrame.src = `https://www.youtube.com/embed/${id}?autoplay=1`;
+    ytContainer.style.display = 'block';
+}
+
+btnYtPlay.addEventListener('click', loadYoutube);
+ytUrlInput.addEventListener('keydown', e => { if (e.key === 'Enter') loadYoutube(); });
+
+
 btnNext.addEventListener('click', playNext);
 btnPrev.addEventListener('click', playPrev);
 
