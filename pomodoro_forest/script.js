@@ -350,6 +350,25 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
+    // ── Google Images search popup ──────────────────────────
+    var bgSearchInput = document.getElementById('bgSearchInput');
+    var bgSearchBtn   = document.getElementById('bgSearchBtn');
+
+    function openGoogleImages() {
+        var q = bgSearchInput ? bgSearchInput.value.trim() : '';
+        var url = 'https://www.google.com/search?tbm=isch&q=' + encodeURIComponent(q || 'nature wallpaper');
+        window.open(url, '_blank', 'width=1100,height=700,resizable=yes,scrollbars=yes');
+    }
+
+    if (bgSearchBtn) {
+        bgSearchBtn.addEventListener('click', openGoogleImages);
+    }
+    if (bgSearchInput) {
+        bgSearchInput.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter') openGoogleImages();
+        });
+    }
+
     function buildBgGrid(files) {
         if (!bgGrid) return;
         bgGrid.innerHTML = '';
