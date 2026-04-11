@@ -1,12 +1,24 @@
 /* ============================================================
    Ambient Sound Mixer — Web Audio API synthesis
-   8 layered sounds, fully offline capable
+   Rain, Birds, Fireplace, Café, Ocean, Keyboard & Thunder use YouTube (IFrame API); Wind is synthetic.
    ============================================================ */
+
+const RAIN_YOUTUBE_VIDEO_ID = 'q76bMs-NwRk';
+/** Start time from URL &t=5339s — https://www.youtube.com/watch?v=q76bMs-NwRk&t=5339s */
+const RAIN_YOUTUBE_START_SECONDS = 5339;
+
+const CAFE_YOUTUBE_VIDEO_ID = 'h2zkV-l_TbY';
+const OCEAN_YOUTUBE_VIDEO_ID = 'vPhg6sc1Mk4';
+const KEYBOARD_YOUTUBE_VIDEO_ID = 'U7Y50T7NKyw';
+const FIREPLACE_YOUTUBE_VIDEO_ID = '2wYtJwDkKIk';
+const THUNDER_YOUTUBE_VIDEO_ID = '27RA4HwAa4U';
+const BIRDS_YOUTUBE_VIDEO_ID = 'qzZyaD3GPIc';
 
 class AmbientMixer {
     constructor() {
         this.ctx = null;
-        this.activeSounds = {}; // id -> { gain, stopFn }
+        this._ytApiPromise = null;
+        this.activeSounds = {}; // id -> { gain, stopFn, kind?, rec? }
 
         this.soundDefs = [
             { id: 'rain',     label: 'Rain',      icon: '🌧' },
@@ -64,9 +76,146 @@ class AmbientMixer {
         return src;
     }
 
+    // ── YouTube (Rain, Birds, Fireplace, Café, Ocean, Keyboard, Thunder) ─────
+
+    _ensureYouTubeIframeAPI() {
+        if (this._ytApiPromise) return this._ytApiPromise;
+        this._ytApiPromise = new Promise((resolve) => {
+            if (window.YT && window.YT.Player) {
+                resolve();
+                return;
+            }
+            const prior = window.onYouTubeIframeAPIReady;
+            window.onYouTubeIframeAPIReady = () => {
+                if (typeof prior === 'function') prior();
+                resolve();
+            };
+            if (!document.querySelector('script[src*="youtube.com/iframe_api"]')) {
+                const tag = document.createElement('script');
+                tag.src = 'https://www.youtube.com/iframe_api';
+                document.head.appendChild(tag);
+            }
+        });
+        return this._ytApiPromise;
+    }
+
+    /**
+     * @param {string} soundId - e.g. 'rain' | 'birds' | 'fire' | 'cafe' | 'ocean' | 'keyboard' | 'thunder'
+     * @param {string} videoId - YouTube video id
+     * @param {string} hostElementId - stable id for off-screen host div
+     * @param {{ startSeconds?: number }} [opts]
+     */
+    _playYouTubeAmbient(soundId, videoId, hostElementId, volume, opts = {}) {
+        const startSeconds = Math.max(0, Math.floor(opts.startSeconds || 0));
+        const rec = {
+            cancelled: false,
+            player: null,
+            mount: null,
+            pendingVolume: volume,
+        };
+        rec.stopFn = () => {
+            rec.cancelled = true;
+            try {
+                if (rec.player && typeof rec.player.destroy === 'function') rec.player.destroy();
+            } catch (e) {}
+            rec.player = null;
+            try {
+                if (rec.mount && rec.mount.parentNode) rec.mount.remove();
+            } catch (e) {}
+            rec.mount = null;
+        };
+
+        this.activeSounds[soundId] = { kind: 'yt', gain: null, stopFn: rec.stopFn, rec };
+
+        this._ensureYouTubeIframeAPI().then(() => {
+            if (rec.cancelled) return;
+
+            let host = document.getElementById(hostElementId);
+            if (!host) {
+                host = document.createElement('div');
+                host.id = hostElementId;
+                host.setAttribute('aria-hidden', 'true');
+                host.style.cssText =
+                    'position:fixed;left:-9999px;width:320px;height:180px;overflow:hidden;pointer-events:none;opacity:0.01;';
+                document.body.appendChild(host);
+            }
+
+            const div = document.createElement('div');
+            const uid = 'ambient-' + soundId + '-yt-' + Date.now();
+            div.id = uid;
+            host.appendChild(div);
+            rec.mount = div;
+
+            const playerVars = {
+                autoplay: 1,
+                loop: 1,
+                playlist: videoId,
+                playsinline: 1,
+            };
+            if (startSeconds > 0) playerVars.start = startSeconds;
+
+            rec.player = new YT.Player(uid, {
+                videoId,
+                playerVars,
+                events: {
+                    onReady: (e) => {
+                        if (rec.cancelled) return;
+                        e.target.setVolume(Math.round(rec.pendingVolume));
+                        if (startSeconds > 0) e.target.seekTo(startSeconds, true);
+                        e.target.playVideo();
+                    },
+                    onStateChange: (e) => {
+                        if (rec.cancelled || startSeconds <= 0) return;
+                        const ENDED = window.YT?.PlayerState?.ENDED ?? 0;
+                        if (e.data === ENDED) {
+                            e.target.seekTo(startSeconds, true);
+                            e.target.playVideo();
+                        }
+                    },
+                },
+            });
+        });
+    }
+
     // ── Sound playback ─────────────────────────────────────────────────────────
 
     _play(id, volume) {
+        if (id === 'rain') {
+            this._playYouTubeAmbient('rain', RAIN_YOUTUBE_VIDEO_ID, 'ambient-rain-yt-host', volume, {
+                startSeconds: RAIN_YOUTUBE_START_SECONDS,
+            });
+            return;
+        }
+        if (id === 'birds') {
+            this._playYouTubeAmbient('birds', BIRDS_YOUTUBE_VIDEO_ID, 'ambient-birds-yt-host', volume);
+            return;
+        }
+        if (id === 'fire') {
+            this._playYouTubeAmbient('fire', FIREPLACE_YOUTUBE_VIDEO_ID, 'ambient-fire-yt-host', volume);
+            return;
+        }
+        if (id === 'cafe') {
+            this._playYouTubeAmbient('cafe', CAFE_YOUTUBE_VIDEO_ID, 'ambient-cafe-yt-host', volume);
+            return;
+        }
+        if (id === 'ocean') {
+            this._playYouTubeAmbient('ocean', OCEAN_YOUTUBE_VIDEO_ID, 'ambient-ocean-yt-host', volume);
+            return;
+        }
+        if (id === 'keyboard') {
+            this._playYouTubeAmbient(
+                'keyboard',
+                KEYBOARD_YOUTUBE_VIDEO_ID,
+                'ambient-keyboard-yt-host',
+                volume
+            );
+            return;
+        }
+        if (id === 'thunder') {
+            this._playYouTubeAmbient('thunder', THUNDER_YOUTUBE_VIDEO_ID, 'ambient-thunder-yt-host', volume);
+            return;
+        }
+
         const ctx = this._getCtx();
         const gain = ctx.createGain();
         gain.gain.value = Math.max(0.001, volume / 100);
@@ -81,54 +230,28 @@ class AmbientMixer {
         const s = this.activeSounds[id];
         if (!s) return;
         if (s.stopFn) s.stopFn();
-        try { s.gain.disconnect(); } catch (e) {}
+        try {
+            if (s.gain) s.gain.disconnect();
+        } catch (e) {}
         delete this.activeSounds[id];
     }
 
     setVolume(id, volume) {
         const s = this.activeSounds[id];
         if (!s) return;
+        if (s.kind === 'yt' && s.rec) {
+            s.rec.pendingVolume = volume;
+            try {
+                if (s.rec.player && typeof s.rec.player.setVolume === 'function') {
+                    s.rec.player.setVolume(Math.round(volume));
+                }
+            } catch (e) {}
+            return;
+        }
         s.gain.gain.setTargetAtTime(Math.max(0.001, volume / 100), this.ctx.currentTime, 0.05);
     }
 
-    // ── RAIN ──────────────────────────────────────────────────────────────────
-    _sound_rain(ctx, out) {
-        const buf = this._whiteBuffer(ctx, 3);
-        const src = this._noiseSrc(ctx, buf);
-
-        const bp1 = ctx.createBiquadFilter();
-        bp1.type = 'bandpass';
-        bp1.frequency.value = 1000;
-        bp1.Q.value = 0.5;
-
-        const hp = ctx.createBiquadFilter();
-        hp.type = 'highpass';
-        hp.frequency.value = 400;
-
-        src.connect(bp1);
-        bp1.connect(hp);
-        hp.connect(out);
-        src.start();
-
-        // Gentle intensity fluctuation
-        const buf2 = this._whiteBuffer(ctx, 3);
-        const src2 = this._noiseSrc(ctx, buf2);
-        const bp2 = ctx.createBiquadFilter();
-        bp2.type = 'bandpass';
-        bp2.frequency.value = 2500;
-        bp2.Q.value = 1.5;
-        const g2 = ctx.createGain();
-        g2.gain.value = 0.3;
-        src2.connect(bp2);
-        bp2.connect(g2);
-        g2.connect(out);
-        src2.start();
-
-        return () => {
-            [src, src2].forEach(s => { try { s.stop(); s.disconnect(); } catch (e) {} });
-            [bp1, hp, bp2, g2].forEach(n => { try { n.disconnect(); } catch (e) {} });
-        };
-    }
+    // ── RAIN: YouTube — see _playYouTubeAmbient() ─────────────────────────────
 
     // ── WIND ──────────────────────────────────────────────────────────────────
     _sound_wind(ctx, out) {
@@ -179,313 +302,11 @@ class AmbientMixer {
         };
     }
 
-    // ── FIREPLACE ─────────────────────────────────────────────────────────────
-    _sound_fire(ctx, out) {
-        // Low rumble base
-        const buf = this._noiseBuffer(ctx, 5);
-        const src = this._noiseSrc(ctx, buf);
-        const lp = ctx.createBiquadFilter();
-        lp.type = 'lowpass';
-        lp.frequency.value = 380;
-        src.connect(lp);
-        lp.connect(out);
-        src.start();
+    // ── FIREPLACE: YouTube — see _playYouTubeAmbient() ───────────────────────
 
-        // Crackle layer
-        let running = true;
-        const crackle = () => {
-            if (!running) return;
-            const t = ctx.currentTime;
-            const delay = 0.05 + Math.random() * 0.6;
+    // ── BIRDS: YouTube — see _playYouTubeAmbient() ───────────────────────────
 
-            const cLen = Math.floor(ctx.sampleRate * 0.04);
-            const cBuf = ctx.createBuffer(1, cLen, ctx.sampleRate);
-            const d = cBuf.getChannelData(0);
-            for (let i = 0; i < cLen; i++) {
-                d[i] = (Math.random() * 2 - 1) * Math.exp(-i / (cLen * 0.3));
-            }
-            const cSrc = ctx.createBufferSource();
-            cSrc.buffer = cBuf;
-
-            const cf = ctx.createBiquadFilter();
-            cf.type = 'highpass';
-            cf.frequency.value = 1000;
-
-            const cg = ctx.createGain();
-            cg.gain.setValueAtTime(0, t + delay);
-            cg.gain.linearRampToValueAtTime(0.4 + Math.random() * 0.5, t + delay + 0.004);
-            cg.gain.exponentialRampToValueAtTime(0.001, t + delay + 0.04);
-
-            cSrc.connect(cf);
-            cf.connect(cg);
-            cg.connect(out);
-            cSrc.start(t + delay);
-            cSrc.stop(t + delay + 0.05);
-
-            setTimeout(crackle, (delay + 0.1 + Math.random() * 0.8) * 1000);
-        };
-        crackle();
-
-        return () => {
-            running = false;
-            try { src.stop(); src.disconnect(); } catch (e) {}
-            try { lp.disconnect(); } catch (e) {}
-        };
-    }
-
-    // ── BIRDS ─────────────────────────────────────────────────────────────────
-    _sound_birds(ctx, out) {
-        let running = true;
-
-        const chirp = () => {
-            if (!running) return;
-            const t = ctx.currentTime + 0.05 + Math.random() * 2.5;
-            const freq = 2000 + Math.random() * 2800;
-            const numNotes = 1 + Math.floor(Math.random() * 3);
-
-            for (let n = 0; n < numNotes; n++) {
-                const nt = t + n * (0.08 + Math.random() * 0.06);
-                const osc = ctx.createOscillator();
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(freq + n * 100, nt);
-                osc.frequency.linearRampToValueAtTime(freq * (1.2 + Math.random() * 0.3), nt + 0.05);
-                osc.frequency.linearRampToValueAtTime(freq * 0.95, nt + 0.1);
-
-                const env = ctx.createGain();
-                env.gain.setValueAtTime(0, nt);
-                env.gain.linearRampToValueAtTime(0.04 + Math.random() * 0.04, nt + 0.012);
-                env.gain.setValueAtTime(0.04 + Math.random() * 0.04, nt + 0.07);
-                env.gain.linearRampToValueAtTime(0, nt + 0.13);
-
-                osc.connect(env);
-                env.connect(out);
-                osc.start(nt);
-                osc.stop(nt + 0.15);
-            }
-
-            setTimeout(chirp, (0.5 + Math.random() * 3) * 1000);
-        };
-
-        // Multiple birds
-        for (let i = 0; i < 4; i++) {
-            setTimeout(chirp, Math.random() * 2000);
-        }
-
-        // Very soft forest ambience underneath
-        const buf = this._whiteBuffer(ctx, 4);
-        const src = this._noiseSrc(ctx, buf);
-        const bp = ctx.createBiquadFilter();
-        bp.type = 'bandpass';
-        bp.frequency.value = 3000;
-        bp.Q.value = 0.3;
-        const g = ctx.createGain();
-        g.gain.value = 0.04;
-        src.connect(bp);
-        bp.connect(g);
-        g.connect(out);
-        src.start();
-
-        return () => {
-            running = false;
-            try { src.stop(); src.disconnect(); } catch (e) {}
-            try { bp.disconnect(); g.disconnect(); } catch (e) {}
-        };
-    }
-
-    // ── CAFÉ ──────────────────────────────────────────────────────────────────
-    _sound_cafe(ctx, out) {
-        // Murmur base
-        const buf = this._whiteBuffer(ctx, 5);
-        const src = this._noiseSrc(ctx, buf);
-
-        const bp = ctx.createBiquadFilter();
-        bp.type = 'bandpass';
-        bp.frequency.value = 600;
-        bp.Q.value = 0.25;
-
-        const lp = ctx.createBiquadFilter();
-        lp.type = 'lowpass';
-        lp.frequency.value = 2800;
-
-        src.connect(bp);
-        bp.connect(lp);
-        lp.connect(out);
-        src.start();
-
-        // Cup clinks / light taps at random intervals
-        let running = true;
-        const clink = () => {
-            if (!running) return;
-            const t = ctx.currentTime + 1 + Math.random() * 6;
-            const freq = 800 + Math.random() * 1200;
-            const osc = ctx.createOscillator();
-            osc.type = 'sine';
-            osc.frequency.setValueAtTime(freq, t);
-            osc.frequency.exponentialRampToValueAtTime(freq * 0.6, t + 0.4);
-            const env = ctx.createGain();
-            env.gain.setValueAtTime(0.08, t);
-            env.gain.exponentialRampToValueAtTime(0.001, t + 0.5);
-            osc.connect(env);
-            env.connect(out);
-            osc.start(t);
-            osc.stop(t + 0.5);
-            setTimeout(clink, (2 + Math.random() * 8) * 1000);
-        };
-        clink();
-
-        return () => {
-            running = false;
-            try { src.stop(); src.disconnect(); } catch (e) {}
-            try { bp.disconnect(); lp.disconnect(); } catch (e) {}
-        };
-    }
-
-    // ── OCEAN ─────────────────────────────────────────────────────────────────
-    _sound_ocean(ctx, out) {
-        const buf = this._whiteBuffer(ctx, 8);
-        const src = this._noiseSrc(ctx, buf);
-
-        const lp = ctx.createBiquadFilter();
-        lp.type = 'lowpass';
-        lp.frequency.value = 700;
-
-        const waveGain = ctx.createGain();
-        waveGain.gain.value = 0.55;
-
-        // Very slow wave oscillation (~0.1 Hz = 10s per wave)
-        const lfo = ctx.createOscillator();
-        lfo.type = 'sine';
-        lfo.frequency.value = 0.09;
-        const lfoAmp = ctx.createGain();
-        lfoAmp.gain.value = 0.5;
-
-        src.connect(lp);
-        lp.connect(waveGain);
-        lfo.connect(lfoAmp);
-        lfoAmp.connect(waveGain.gain);
-        waveGain.connect(out);
-        src.start();
-        lfo.start();
-
-        // High-frequency surf
-        const buf2 = this._whiteBuffer(ctx, 5);
-        const src2 = this._noiseSrc(ctx, buf2);
-        const bp2 = ctx.createBiquadFilter();
-        bp2.type = 'bandpass';
-        bp2.frequency.value = 2000;
-        bp2.Q.value = 0.4;
-        const g2 = ctx.createGain();
-        g2.gain.value = 0.12;
-        src2.connect(bp2);
-        bp2.connect(g2);
-        g2.connect(out);
-        src2.start();
-
-        return () => {
-            [src, src2, lfo].forEach(n => { try { n.stop(); n.disconnect(); } catch (e) {} });
-            [lp, waveGain, lfoAmp, bp2, g2].forEach(n => { try { n.disconnect(); } catch (e) {} });
-        };
-    }
-
-    // ── KEYBOARD ──────────────────────────────────────────────────────────────
-    _sound_keyboard(ctx, out) {
-        let running = true;
-
-        const key = () => {
-            if (!running) return;
-            const t = ctx.currentTime;
-            const dur = 0.003 + Math.random() * 0.006;
-            const cLen = Math.floor(ctx.sampleRate * dur);
-            const cBuf = ctx.createBuffer(1, cLen, ctx.sampleRate);
-            const d = cBuf.getChannelData(0);
-            for (let i = 0; i < cLen; i++) {
-                d[i] = (Math.random() * 2 - 1) * Math.exp(-i / (cLen * 0.4));
-            }
-            const cSrc = ctx.createBufferSource();
-            cSrc.buffer = cBuf;
-
-            const hp = ctx.createBiquadFilter();
-            hp.type = 'highpass';
-            hp.frequency.value = 1200 + Math.random() * 1500;
-
-            const g = ctx.createGain();
-            g.gain.value = 0.18 + Math.random() * 0.15;
-
-            cSrc.connect(hp);
-            hp.connect(g);
-            g.connect(out);
-            cSrc.start(t);
-        };
-
-        // Simulate typing bursts
-        const burst = () => {
-            if (!running) return;
-            const keys = 3 + Math.floor(Math.random() * 12);
-            for (let k = 0; k < keys; k++) {
-                setTimeout(key, k * (40 + Math.random() * 80));
-            }
-            // Pause between bursts
-            const pause = 400 + Math.random() * 2500;
-            setTimeout(burst, keys * 80 + pause);
-        };
-        burst();
-
-        return () => { running = false; };
-    }
-
-    // ── THUNDER ───────────────────────────────────────────────────────────────
-    _sound_thunder(ctx, out) {
-        let running = true;
-
-        const boom = () => {
-            if (!running) return;
-            const t = ctx.currentTime;
-
-            const buf = this._noiseBuffer(ctx, 5);
-            const src = this._noiseSrc(ctx, buf);
-
-            const lp = ctx.createBiquadFilter();
-            lp.type = 'lowpass';
-            lp.frequency.value = 90;
-
-            const env = ctx.createGain();
-            env.gain.setValueAtTime(0, t);
-            env.gain.linearRampToValueAtTime(2.0, t + 0.15);
-            env.gain.exponentialRampToValueAtTime(0.001, t + 4.0);
-
-            src.connect(lp);
-            lp.connect(env);
-            env.connect(out);
-            src.start(t);
-            src.stop(t + 4.5);
-
-            // Random interval 15–40 seconds
-            setTimeout(boom, (15 + Math.random() * 25) * 1000);
-        };
-
-        // First thunder after a few seconds
-        setTimeout(boom, (3 + Math.random() * 5) * 1000);
-
-        // Subtle rain-like rumble underneath
-        const buf2 = this._whiteBuffer(ctx, 4);
-        const src2 = this._noiseSrc(ctx, buf2);
-        const bp2 = ctx.createBiquadFilter();
-        bp2.type = 'bandpass';
-        bp2.frequency.value = 900;
-        bp2.Q.value = 0.4;
-        const g2 = ctx.createGain();
-        g2.gain.value = 0.25;
-        src2.connect(bp2);
-        bp2.connect(g2);
-        g2.connect(out);
-        src2.start();
-
-        return () => {
-            running = false;
-            try { src2.stop(); src2.disconnect(); } catch (e) {}
-            try { bp2.disconnect(); g2.disconnect(); } catch (e) {}
-        };
-    }
+    // ── RAIN / BIRDS / FIREPLACE / CAFÉ / OCEAN / KEYBOARD / THUNDER: YouTube — _playYouTubeAmbient()
 
     // ── UI builder ────────────────────────────────────────────────────────────
 

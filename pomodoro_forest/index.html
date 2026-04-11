@@ -13,8 +13,14 @@
 
 <body>
 
-    <!-- ── Scene: fullscreen forest background ── -->
+    <!-- ── Scene: still image + optional muted YouTube layer under falling leaves ── -->
     <div class="scene" id="scene">
+        <div class="scene-youtube" id="sceneYoutube" aria-hidden="true">
+            <iframe id="sceneYoutubeFrame" title="YouTube background" loading="lazy"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen
+                referrerpolicy="strict-origin-when-cross-origin"></iframe>
+        </div>
         <div class="falling-leaves" id="fallingLeaves"></div>
     </div>
 
@@ -272,14 +278,6 @@
                 </button>
             </div>
 
-            <!-- YouTube embed -->
-            <div id="ytContainer" style="display:none">
-                <iframe id="ytFrame" width="100%" height="168" frameborder="0" allowfullscreen
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    referrerpolicy="strict-origin-when-cross-origin"
-                    style="border-radius:12px"></iframe>
-            </div>
-
             <ul class="music-list" id="musicList"></ul>
 
             <!-- Player controls -->
@@ -362,6 +360,15 @@
             </div>
         </div>
         <div class="widget-body">
+            <div class="bg-youtube-block">
+                <div class="url-input-row">
+                    <input type="text" class="url-input" id="bgYtUrlInput" placeholder="Paste YouTube URL (muted background)…" autocomplete="off">
+                    <button type="button" class="url-play-btn" id="bgYtApplyBtn" title="Use as background">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                    </button>
+                </div>
+                <p class="bg-yt-hint">Plays muted behind the forest. Choose a still image below to turn it off.</p>
+            </div>
             <div class="bg-grid" id="bgGrid">
                 <!-- Populated by script.js -->
             </div>

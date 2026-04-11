@@ -23,9 +23,39 @@ html, body {
     z-index: 0;
 }
 
+/* Muted YouTube embed — 16:9 scaled to cover viewport (LifeAt-style live BG) */
+.scene-youtube {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    pointer-events: none;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.45s ease;
+}
+
+.scene-youtube.is-active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.scene-youtube iframe {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100vw;
+    height: 56.25vw;
+    min-width: 177.77vh;
+    min-height: 100vh;
+    transform: translate(-50%, -50%);
+    border: 0;
+}
+
 .falling-leaves {
     position: absolute;
     inset: 0;
+    z-index: 1;
     background: url(asset/img/forest_dense_bg.png) no-repeat center center;
     background-size: cover;
     overflow: hidden;
@@ -201,7 +231,7 @@ html, body {
 }
 
 .live-clock {
-    font-size: 24px;
+    font-size: 29px;
     font-weight: 700;
     color: #F9E1A8;
     letter-spacing: -0.5px;
@@ -211,7 +241,7 @@ html, body {
 }
 
 .live-date {
-    font-size: 11px;
+    font-size: 16px;
     font-weight: 400;
     color: #FFDAB4;
     letter-spacing: 0.3px;
@@ -1188,9 +1218,85 @@ html, body {
    ============================================================ */
 
 .notes-body {
+    position: relative;
     padding: 0;
     gap: 0;
     max-height: none;
+}
+
+.notes-clear-confirm {
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    background: rgba(20, 14, 32, 0.82);
+    backdrop-filter: blur(6px);
+}
+
+.notes-clear-confirm[hidden] {
+    display: none;
+}
+
+.notes-clear-confirm-card {
+    width: 100%;
+    max-width: 260px;
+    padding: 16px 18px;
+    border-radius: 12px;
+    background: rgba(40, 32, 58, 0.95);
+    border: 1px solid rgba(214, 229, 189, 0.12);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+}
+
+.notes-clear-confirm-title {
+    margin: 0 0 6px;
+    font-size: 15px;
+    font-weight: 600;
+    color: #f5f6f7;
+    letter-spacing: 0.02em;
+}
+
+.notes-clear-confirm-desc {
+    margin: 0 0 16px;
+    font-size: 12px;
+    color: rgba(214, 229, 189, 0.65);
+    line-height: 1.45;
+}
+
+.notes-clear-confirm-actions {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+}
+
+.notes-clear-confirm-btn {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 12px;
+    padding: 6px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    border: 1px solid rgba(214, 229, 189, 0.15);
+    background: transparent;
+    color: rgba(214, 229, 189, 0.75);
+    transition: background 0.15s ease, color 0.15s ease;
+}
+
+.notes-clear-confirm-btn:hover {
+    background: rgba(214, 229, 189, 0.08);
+    color: #f5f6f7;
+}
+
+.notes-clear-confirm-ok {
+    background: rgba(255, 203, 225, 0.18);
+    border-color: transparent;
+    color: rgba(255, 203, 225, 0.95);
+}
+
+.notes-clear-confirm-ok:hover {
+    background: rgba(255, 203, 225, 0.28);
+    color: #fff;
 }
 
 .notes-area {
@@ -1250,6 +1356,18 @@ html, body {
    BACKGROUND PICKER widget
    ============================================================ */
 
+.bg-youtube-block {
+    margin-bottom: 14px;
+}
+
+.bg-yt-hint {
+    margin: 8px 0 0;
+    font-size: 10px;
+    line-height: 1.45;
+    color: rgba(214, 229, 189, 0.4);
+    letter-spacing: 0.2px;
+}
+
 .bg-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -1308,7 +1426,7 @@ html, body {
     text-align: center;
 }
 
-/* Wide card for 5th background */
+/* Wide card for 5th tile (still image in default list) */
 .bg-card:nth-child(5) {
     grid-column: 1 / -1;
     height: 72px;

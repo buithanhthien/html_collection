@@ -271,7 +271,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (handle) makeDraggable(widget, handle);
     });
 
-    // ── Background switcher ─────────────────────────────────
+    // ── Background switcher (still images + optional muted YouTube URL) ─────
 
     var bgData = [
         { file: 'forest_dense_bg.png',        label: 'Dense Forest' },
@@ -281,9 +281,58 @@ document.addEventListener('DOMContentLoaded', function () {
         { file: 'meditate_forest_bg.png',      label: 'Zen Garden' },
     ];
 
-    var currentBg  = bgData[0].file;
-    var fallingEl  = document.getElementById('fallingLeaves');
-    var bgGrid     = document.getElementById('bgGrid');
+    var sceneYoutube = document.getElementById('sceneYoutube');
+    var ytFrame      = document.getElementById('sceneYoutubeFrame');
+    var fallingEl    = document.getElementById('fallingLeaves');
+    var bgGrid       = document.getElementById('bgGrid');
+    var bgYtInput    = document.getElementById('bgYtUrlInput');
+    var bgYtApply    = document.getElementById('bgYtApplyBtn');
+
+    function extractBgYtId(url) {
+        var m = String(url).match(/(?:v=|youtu\.be\/|embed\/)([A-Za-z0-9_-]{11})/);
+        return m ? m[1] : null;
+    }
+
+    function stopSceneYoutube() {
+        if (!sceneYoutube || !ytFrame) return;
+        sceneYoutube.classList.remove('is-active');
+        ytFrame.src = 'about:blank';
+    }
+
+    function applyStillBackground(bg) {
+        if (!fallingEl) return;
+        stopSceneYoutube();
+        fallingEl.style.backgroundImage = "url('asset/img/" + bg.file + "')";
+        fallingEl.style.backgroundColor = '';
+    }
+
+    function applyYoutubeBackgroundFromUrl(url) {
+        var id = extractBgYtId(url);
+        if (!id || !ytFrame || !sceneYoutube || !fallingEl) return;
+        var q = 'autoplay=1&mute=1&loop=1&playlist=' + encodeURIComponent(id) +
+            '&playsinline=1&controls=0&modestbranding=1&rel=0';
+        ytFrame.src = 'https://www.youtube.com/embed/' + id + '?' + q;
+        sceneYoutube.classList.add('is-active');
+        fallingEl.style.backgroundImage = 'none';
+        fallingEl.style.backgroundColor = 'transparent';
+        document.querySelectorAll('.bg-card').forEach(function (c) {
+            c.classList.remove('active');
+        });
+    }
+
+    function onBgYtApply() {
+        if (!bgYtInput) return;
+        applyYoutubeBackgroundFromUrl(bgYtInput.value.trim());
+    }
+
+    if (bgYtApply) {
+        bgYtApply.addEventListener('click', onBgYtApply);
+    }
+    if (bgYtInput) {
+        bgYtInput.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter') onBgYtApply();
+        });
+    }
 
     if (bgGrid) {
         bgData.forEach(function (bg, idx) {
@@ -298,10 +347,7 @@ document.addEventListener('DOMContentLoaded', function () {
             card.appendChild(label);
 
             card.addEventListener('click', function () {
-                currentBg = bg.file;
-                if (fallingEl) {
-                    fallingEl.style.backgroundImage = "url('asset/img/" + bg.file + "')";
-                }
+                applyStillBackground(bg);
                 document.querySelectorAll('.bg-card').forEach(function (c) {
                     c.classList.remove('active');
                 });
@@ -310,6 +356,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             bgGrid.appendChild(card);
         });
+        applyStillBackground(bgData[0]);
     }
 
     // ── Fullscreen toggle ───────────────────────────────────
