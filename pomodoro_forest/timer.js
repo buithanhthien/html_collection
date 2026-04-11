@@ -9,8 +9,6 @@ const DEFAULT_SETTINGS = {
     sessions: 4,
     sound: true,
     volume: 60,
-    lofi: true,
-    lofiVolume: 40,
 };
 
 function loadSettings() {
@@ -60,79 +58,7 @@ function playBell(volume) {
     }
 }
 
-/* ============================================================
-   Lofi audio player
-   ============================================================ */
 
-// Publicly available free streams — tries in order until one works
-const LOFI_STREAMS = [
-    'https://ice2.somafm.com/groovesalad-128-mp3',  // SomaFM Groove Salad (ambient)
-    'https://ice1.somafm.com/groovesalad-128-mp3',  // Mirror
-];
-
-class LofiPlayer {
-    constructor() {
-        this.audio = new Audio();
-        this.audio.crossOrigin = 'anonymous';
-        this._streamIndex = 0;
-        this._tryStream(this._streamIndex);
-        this.audio.loop = true;
-        this.audio.volume = 0.4;
-        this._playing = false;
-        this.indicator = document.getElementById('musicIndicator');
-    }
-
-    _tryStream(index) {
-        if (index >= LOFI_STREAMS.length) return;
-        this.audio.src = LOFI_STREAMS[index];
-        this.audio.onerror = () => {
-            this._streamIndex++;
-            this._tryStream(this._streamIndex);
-        };
-    }
-
-    setVolume(vol) {
-        this.audio.volume = Math.max(0, Math.min(1, vol / 100));
-    }
-
-    play() {
-        if (this._playing) return;
-        this.audio.play()
-            .then(() => {
-                this._playing = true;
-                this._showIndicator();
-            })
-            .catch(err => {
-                console.warn('Lofi autoplay blocked:', err);
-            });
-    }
-
-    pause() {
-        if (!this._playing) return;
-        this.audio.pause();
-        this._playing = false;
-        this._hideIndicator();
-    }
-
-    stop() {
-        this.audio.pause();
-        this.audio.currentTime = 0;
-        this._playing = false;
-        this._hideIndicator();
-    }
-
-    _showIndicator() {
-        if (this.indicator) {
-            this.indicator.classList.add('visible');
-        }
-    }
-
-    _hideIndicator() {
-        if (this.indicator) {
-            this.indicator.classList.remove('visible');
-        }
-    }
-}
 
 /* ============================================================
    Pomodoro Timer
@@ -176,19 +102,12 @@ class PomodoroTimer {
         this.inSound = document.getElementById('settingSound');
         this.inVolume = document.getElementById('settingVolume');
         this.volumeLabel = document.getElementById('settingVolumeLabel');
-        this.inLofi = document.getElementById('settingLofi');
-        this.inLofiVolume = document.getElementById('settingLofiVolume');
-        this.lofiVolumeLabel = document.getElementById('settingLofiVolumeLabel');
 
         // SVG ring
         const r = this.ring.r.baseVal.value;
         this.circumference = 2 * Math.PI * r;
         this.ring.style.strokeDasharray = this.circumference;
         this.ring.style.strokeDashoffset = 0;
-
-        // Lofi player (instantiate but don't play yet)
-        this.lofi = new LofiPlayer();
-        this.lofi.setVolume(this.settings.lofiVolume);
 
         this._bindEvents();
         this._applyMuteState();
@@ -235,14 +154,9 @@ class PomodoroTimer {
             }
         });
 
-        // Live labels for sliders
+        // Live label for chime volume slider
         this.inVolume.addEventListener('input', () => {
             this.volumeLabel.textContent = `${this.inVolume.value}%`;
-        });
-        this.inLofiVolume.addEventListener('input', () => {
-            this.lofiVolumeLabel.textContent = `${this.inLofiVolume.value}%`;
-            // Live preview volume while dragging
-            this.lofi.setVolume(parseInt(this.inLofiVolume.value));
         });
     }
 
@@ -255,11 +169,6 @@ class PomodoroTimer {
         this.btnStart.textContent = 'Pause';
         this.container.classList.add('running');
         this.interval = setInterval(() => this._tick(), 1000);
-
-        // Resume lofi if we're in a break and it was playing
-        if (this._isBreak() && this.settings.lofi) {
-            this.lofi.play();
-        }
     }
 
     _pause() {
@@ -267,7 +176,6 @@ class PomodoroTimer {
         this.btnStart.textContent = 'Resume';
         this.container.classList.remove('running');
         clearInterval(this.interval);
-        this.lofi.pause();
     }
 
     _reset() {
@@ -276,7 +184,6 @@ class PomodoroTimer {
         this.btnStart.textContent = 'Start';
         this.container.classList.remove('running');
         this.timeLeft = this.totalTime;
-        this.lofi.stop();
 
         this.ring.style.transition = 'none';
         this._updateRing();
@@ -308,7 +215,6 @@ class PomodoroTimer {
 
     _complete() {
         if (this.settings.sound) playBell(this.settings.volume);
-        this.lofi.stop();
 
         if (this.mode === 'pomodoro') {
             this.pomodoroCount++;
@@ -366,15 +272,10 @@ class PomodoroTimer {
         this.inSound.checked = s.sound;
         this.inVolume.value = s.volume;
         this.volumeLabel.textContent = `${s.volume}%`;
-        this.inLofi.checked = s.lofi;
-        this.inLofiVolume.value = s.lofiVolume;
-        this.lofiVolumeLabel.textContent = `${s.lofiVolume}%`;
         this.overlay.classList.add('open');
     }
 
     _closeSettings() {
-        // Revert live lofi volume preview to saved value
-        this.lofi.setVolume(this.settings.lofiVolume);
         this.overlay.classList.remove('open');
     }
 
@@ -386,12 +287,9 @@ class PomodoroTimer {
             sessions: Math.max(1, Math.min(10, parseInt(this.inSessions.value) || 4)),
             sound: this.inSound.checked,
             volume: parseInt(this.inVolume.value) || 60,
-            lofi: this.inLofi.checked,
-            lofiVolume: parseInt(this.inLofiVolume.value) || 40,
         };
         this.settings = s;
         saveSettings(s);
-        this.lofi.setVolume(s.lofiVolume);
         this._buildModes();
         this._switchMode(this.mode);
         this._applyMuteState();
