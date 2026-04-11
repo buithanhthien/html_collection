@@ -133,11 +133,11 @@ LeafScene.prototype.render = function () {
     requestAnimationFrame(this.render.bind(this));
 };
 
-// Start leaf scene
-var leafContainer = document.querySelector('.falling-leaves');
-var leaves = new LeafScene(leafContainer);
-leaves.init();
-leaves.render();
+// Leaf scene disabled
+// var leafContainer = document.querySelector('.falling-leaves');
+// var leaves = new LeafScene(leafContainer);
+// leaves.init();
+// leaves.render();
 
 /* ── App logic ────────────────────────────────────────────── */
 
@@ -273,14 +273,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // ── Background switcher (still images + optional muted YouTube URL) ─────
 
-    var bgData = [
-        { file: 'forest_dense_bg.png',        label: 'Dense Forest' },
-        { file: 'forest_misty_bg.png',         label: 'Misty Morning' },
-        { file: 'forest_palette_bg.png',       label: 'Golden Hour' },
-        { file: 'forest_topleft_light_bg.png', label: 'Sunlit Path' },
-        { file: 'meditate_forest_bg.png',      label: 'Zen Garden' },
-    ];
-
     var sceneYoutube = document.getElementById('sceneYoutube');
     var ytFrame      = document.getElementById('sceneYoutubeFrame');
     var fallingEl    = document.getElementById('fallingLeaves');
@@ -299,10 +291,10 @@ document.addEventListener('DOMContentLoaded', function () {
         ytFrame.src = 'about:blank';
     }
 
-    function applyStillBackground(bg) {
+    function applyStillBackground(file) {
         if (!fallingEl) return;
         stopSceneYoutube();
-        fallingEl.style.backgroundImage = "url('asset/img/" + bg.file + "')";
+        fallingEl.style.backgroundImage = "url('asset/img/" + file + "')";
         fallingEl.style.backgroundColor = '';
     }
 
@@ -320,9 +312,29 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
+    function isDirectMediaUrl(url) {
+        return /\.(jpg|jpeg|png|webp|gif|avif|svg|mp4|webm)(\?.*)?$/i.test(url);
+    }
+
+    function applyDirectMediaUrl(url) {
+        stopSceneYoutube();
+        if (!fallingEl) return;
+        fallingEl.style.backgroundImage = "url('" + url + "')";
+        fallingEl.style.backgroundColor = '';
+        document.querySelectorAll('.bg-card').forEach(function (c) {
+            c.classList.remove('active');
+        });
+    }
+
     function onBgYtApply() {
         if (!bgYtInput) return;
-        applyYoutubeBackgroundFromUrl(bgYtInput.value.trim());
+        var url = bgYtInput.value.trim();
+        if (!url) return;
+        if (isDirectMediaUrl(url)) {
+            applyDirectMediaUrl(url);
+        } else {
+            applyYoutubeBackgroundFromUrl(url);
+        }
     }
 
     if (bgYtApply) {
@@ -334,20 +346,23 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    if (bgGrid) {
-        bgData.forEach(function (bg, idx) {
+    function buildBgGrid(files) {
+        if (!bgGrid) return;
+        bgGrid.innerHTML = '';
+        files.forEach(function (file, idx) {
+            var label = file.replace(/\.[^.]+$/, '').replace(/[-_]/g, ' ');
             var card = document.createElement('div');
             card.className = 'bg-card' + (idx === 0 ? ' active' : '');
-            card.style.backgroundImage = "url('asset/img/" + bg.file + "')";
-            card.title = bg.label;
+            card.style.backgroundImage = "url('asset/img/" + file + "')";
+            card.title = label;
 
-            var label = document.createElement('span');
-            label.className = 'bg-label';
-            label.textContent = bg.label;
-            card.appendChild(label);
+            var labelEl = document.createElement('span');
+            labelEl.className = 'bg-label';
+            labelEl.textContent = label;
+            card.appendChild(labelEl);
 
             card.addEventListener('click', function () {
-                applyStillBackground(bg);
+                applyStillBackground(file);
                 document.querySelectorAll('.bg-card').forEach(function (c) {
                     c.classList.remove('active');
                 });
@@ -356,8 +371,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
             bgGrid.appendChild(card);
         });
-        applyStillBackground(bgData[0]);
+        if (files.length > 0) applyStillBackground(files[0]);
     }
+
+    // Fetch image list from server; fall back to empty grid on error
+    fetch('/api/backgrounds')
+        .then(function (r) { return r.json(); })
+        .then(function (files) { buildBgGrid(files); })
+        .catch(function () { buildBgGrid([]); });
 
     // ── Fullscreen toggle ───────────────────────────────────
 

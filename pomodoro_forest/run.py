@@ -1,13 +1,33 @@
 #!/usr/bin/env python3
 import os
+import json
 import webbrowser
 from http.server import HTTPServer, SimpleHTTPRequestHandler
 import threading
 
+IMAGE_EXTS = {'.png', '.jpg', '.jpeg', '.webp', '.gif', '.avif'}
+
 class MusicServer(SimpleHTTPRequestHandler):
     def log_message(self, format, *args):
         pass  # Suppress logs
-    
+
+    def do_GET(self):
+        if self.path == '/api/backgrounds':
+            img_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'asset', 'img')
+            files = [
+                f for f in os.listdir(img_dir)
+                if os.path.splitext(f)[1].lower() in IMAGE_EXTS
+            ]
+            files.sort()
+            body = json.dumps(files).encode()
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/json')
+            self.send_header('Content-Length', len(body))
+            self.end_headers()
+            self.wfile.write(body)
+            return
+        super().do_GET()
+
     def end_headers(self):
         self.send_header('Cache-Control', 'no-store, no-cache, must-revalidate')
         self.send_header('Referrer-Policy', 'strict-origin-when-cross-origin')
