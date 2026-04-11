@@ -186,6 +186,7 @@ ytUrlInput.addEventListener('keydown', e => { if (e.key === 'Enter') loadYoutube
 
 btnNext.addEventListener('click', playNext);
 btnPrev.addEventListener('click', playPrev);
+btnPlayPause.addEventListener('click', togglePlayPause);
 
 progressBar.addEventListener('input', (e) => {
     if (currentAudio) {

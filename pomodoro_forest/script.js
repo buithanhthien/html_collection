@@ -1,10 +1,23 @@
+/* ============================================================
+   script.js
+   - LeafScene animation (unchanged)
+   - Sidebar widget toggling
+   - Draggable widgets
+   - Live clock
+   - Background switcher
+   - Bring-to-front on click
+   - Fullscreen toggle
+   ============================================================ */
+
+/* ── LeafScene ────────────────────────────────────────────── */
+
 var LeafScene = function (el) {
     this.viewport = el;
     this.world = document.createElement('div');
     this.leaves = [];
 
     this.options = {
-        numLeaves: 20,
+        numLeaves: 22,
         wind: {
             magnitude: 1.2,
             maxSpeed: 12,
@@ -16,13 +29,9 @@ var LeafScene = function (el) {
 
     this.width = this.viewport.offsetWidth;
     this.height = this.viewport.offsetHeight;
-
-    // animation helper
     this.timer = 0;
 
     this._resetLeaf = function (leaf) {
-
-        // place leaf towards the top left
         leaf.x = this.width * 2 - Math.random() * this.width * 1.75;
         leaf.y = -10;
         leaf.z = Math.random() * 200;
@@ -30,13 +39,8 @@ var LeafScene = function (el) {
             leaf.x = this.width + 10;
             leaf.y = Math.random() * this.height / 2;
         }
-        // at the start, the leaf can be anywhere
-        if (this.timer == 0) {
-            leaf.y = Math.random() * this.height;
-        }
+        if (this.timer == 0) leaf.y = Math.random() * this.height;
 
-        // Choose axis of rotation.
-        // If axis is not X, chose a random static x-rotation for greater variability
         leaf.rotation.speed = Math.random() * 10;
         var randomAxis = Math.random();
         if (randomAxis > 0.5) {
@@ -47,83 +51,55 @@ var LeafScene = function (el) {
         } else {
             leaf.rotation.axis = 'Z';
             leaf.rotation.x = Math.random() * 360 - 180;
-            // looks weird if the rotation is too fast around this axis
             leaf.rotation.speed = Math.random() * 3;
         }
 
-        // random speed
         leaf.xSpeedVariation = Math.random() * 0.8 - 0.4;
         leaf.ySpeed = Math.random() + 1.5;
-
         return leaf;
-    }
+    };
 
     this._updateLeaf = function (leaf) {
         var leafWindSpeed = this.options.wind.speed(this.timer - this.options.wind.start, leaf.y);
-
         var xSpeed = leafWindSpeed + leaf.xSpeedVariation;
         leaf.x -= xSpeed;
         leaf.y += leaf.ySpeed;
         leaf.rotation.value += leaf.rotation.speed;
 
         var t = 'translateX( ' + leaf.x + 'px ) translateY( ' + leaf.y + 'px ) translateZ( ' + leaf.z + 'px )  rotate' + leaf.rotation.axis + '( ' + leaf.rotation.value + 'deg )';
-        if (leaf.rotation.axis !== 'X') {
-            t += ' rotateX(' + leaf.rotation.x + 'deg)';
-        }
+        if (leaf.rotation.axis !== 'X') t += ' rotateX(' + leaf.rotation.x + 'deg)';
+
         leaf.el.style.webkitTransform = t;
         leaf.el.style.MozTransform = t;
         leaf.el.style.oTransform = t;
         leaf.el.style.transform = t;
 
-        // reset if out of view
-        if (leaf.x < -10 || leaf.y > this.height + 10) {
-            this._resetLeaf(leaf);
-        }
-    }
+        if (leaf.x < -10 || leaf.y > this.height + 10) this._resetLeaf(leaf);
+    };
 
     this._updateWind = function () {
-        // wind follows a sine curve: asin(b*time + c) + a
-        // where a = wind magnitude as a function of leaf position, b = wind.duration, c = offset
-        // wind duration should be related to wind magnitude, e.g. higher windspeed means longer gust duration
-
         if (this.timer === 0 || this.timer > (this.options.wind.start + this.options.wind.duration)) {
-
             this.options.wind.magnitude = Math.random() * this.options.wind.maxSpeed;
             this.options.wind.duration = this.options.wind.magnitude * 50 + (Math.random() * 20 - 10);
             this.options.wind.start = this.timer;
-
             var screenHeight = this.height;
-
             this.options.wind.speed = function (t, y) {
-                // should go from full wind speed at the top, to 1/2 speed at the bottom, using leaf Y
                 var a = this.magnitude / 2 * (screenHeight - 2 * y / 3) / screenHeight;
                 return a * Math.sin(2 * Math.PI / this.duration * t + (3 * Math.PI / 2)) + a;
-            }
+            };
         }
-    }
-}
+    };
+};
 
 LeafScene.prototype.init = function () {
-
     for (var i = 0; i < this.options.numLeaves; i++) {
         var leaf = {
             el: document.createElement('div'),
-            x: 0,
-            y: 0,
-            z: 0,
-            rotation: {
-                axis: 'X',
-                value: 0,
-                speed: 0,
-                x: 0
-            },
+            x: 0, y: 0, z: 0,
+            rotation: { axis: 'X', value: 0, speed: 0, x: 0 },
             xSpeedVariation: 0,
             ySpeed: 0,
-            path: {
-                type: 1,
-                start: 0,
-
-            },
+            path: { type: 1, start: 0 },
             image: 1
         };
         this._resetLeaf(leaf);
@@ -136,34 +112,221 @@ LeafScene.prototype.init = function () {
     this.world.className = 'leaf-scene';
     this.viewport.appendChild(this.world);
 
-    // set perspective
-    this.world.style.webkitPerspective = "400px";
-    this.world.style.MozPerspective = "400px";
-    this.world.style.oPerspective = "400px";
-    this.world.style.perspective = "400px";
+    this.world.style.webkitPerspective = '400px';
+    this.world.style.MozPerspective = '400px';
+    this.world.style.oPerspective = '400px';
+    this.world.style.perspective = '400px';
 
-    // reset window height/width on resize
     var self = this;
-    window.onresize = function (event) {
+    window.addEventListener('resize', function () {
         self.width = self.viewport.offsetWidth;
         self.height = self.viewport.offsetHeight;
-    };
-}
+    });
+};
 
 LeafScene.prototype.render = function () {
     this._updateWind();
     for (var i = 0; i < this.leaves.length; i++) {
         this._updateLeaf(this.leaves[i]);
     }
-
     this.timer++;
-
     requestAnimationFrame(this.render.bind(this));
-}
+};
 
-// start up leaf scene
-var leafContainer = document.querySelector('.falling-leaves'),
-    leaves = new LeafScene(leafContainer);
-
+// Start leaf scene
+var leafContainer = document.querySelector('.falling-leaves');
+var leaves = new LeafScene(leafContainer);
 leaves.init();
 leaves.render();
+
+/* ── App logic ────────────────────────────────────────────── */
+
+document.addEventListener('DOMContentLoaded', function () {
+
+    // ── Live clock ──────────────────────────────────────────
+
+    var DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    var MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+                  'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    var clockEl = document.getElementById('liveClock');
+    var dateEl  = document.getElementById('liveDate');
+
+    function updateClock() {
+        var now = new Date();
+        var h = String(now.getHours()).padStart(2, '0');
+        var m = String(now.getMinutes()).padStart(2, '0');
+        clockEl.textContent = h + ':' + m;
+        clockEl.title = h + ':' + m + ':' + String(now.getSeconds()).padStart(2, '0');
+        if (dateEl) {
+            dateEl.textContent = DAYS[now.getDay()] + ', ' + MONTHS[now.getMonth()] + ' ' + now.getDate();
+        }
+    }
+
+    updateClock();
+    setInterval(updateClock, 1000);
+
+    // ── Sidebar toggle ──────────────────────────────────────
+
+    var sidebarBtns = document.querySelectorAll('.sidebar-btn[data-target]');
+    sidebarBtns.forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            var targetId = btn.dataset.target;
+            var widget   = document.getElementById(targetId);
+            if (!widget) return;
+
+            var isVisible = widget.classList.contains('visible');
+            widget.classList.toggle('visible', !isVisible);
+            btn.classList.toggle('active', !isVisible);
+
+            // Bring to front when opened
+            if (!isVisible) bringToFront(widget);
+        });
+    });
+
+    // ── Widget close buttons ────────────────────────────────
+
+    document.querySelectorAll('.widget-close-btn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            var targetId = btn.dataset.target;
+            var widget   = document.getElementById(targetId);
+            if (widget) widget.classList.remove('visible');
+
+            var navBtn = document.querySelector('.sidebar-btn[data-target="' + targetId + '"]');
+            if (navBtn) navBtn.classList.remove('active');
+        });
+    });
+
+    // ── Bring widget to front on click ──────────────────────
+
+    var topZ = 200;
+
+    function bringToFront(el) {
+        topZ++;
+        el.style.zIndex = topZ;
+    }
+
+    document.querySelectorAll('.widget').forEach(function (widget) {
+        widget.addEventListener('mousedown', function () {
+            bringToFront(widget);
+        }, true);
+    });
+
+    // ── Draggable widgets ───────────────────────────────────
+
+    function makeDraggable(widget, handle) {
+        var dragging = false;
+        var startMouseX, startMouseY, startLeft, startTop;
+
+        handle.addEventListener('mousedown', function (e) {
+            // Don't start drag on interactive elements
+            if (e.target.closest('button, input, select, textarea, a')) return;
+
+            dragging = true;
+            bringToFront(widget);
+
+            var rect = widget.getBoundingClientRect();
+            startLeft  = rect.left;
+            startTop   = rect.top;
+            startMouseX = e.clientX;
+            startMouseY = e.clientY;
+
+            // Freeze position as explicit left/top (remove any CSS centering)
+            widget.style.left = startLeft + 'px';
+            widget.style.top  = startTop  + 'px';
+            widget.style.right  = 'auto';
+            widget.style.margin = '0';
+
+            e.preventDefault();
+        });
+
+        document.addEventListener('mousemove', function (e) {
+            if (!dragging) return;
+            var dx = e.clientX - startMouseX;
+            var dy = e.clientY - startMouseY;
+
+            var newLeft = startLeft + dx;
+            var newTop  = startTop  + dy;
+
+            // Clamp inside viewport (leave a 20px margin)
+            var minLeft = 68 + 4; // sidebar width + gap
+            var maxLeft = window.innerWidth  - widget.offsetWidth  - 4;
+            var minTop  = 0;
+            var maxTop  = window.innerHeight - widget.offsetHeight - 4;
+
+            newLeft = Math.max(minLeft, Math.min(maxLeft, newLeft));
+            newTop  = Math.max(minTop,  Math.min(maxTop,  newTop));
+
+            widget.style.left = newLeft + 'px';
+            widget.style.top  = newTop  + 'px';
+        });
+
+        document.addEventListener('mouseup', function () {
+            dragging = false;
+        });
+    }
+
+    // Attach draggable to all widgets
+    document.querySelectorAll('.widget').forEach(function (widget) {
+        var handle = widget.querySelector('.widget-header');
+        if (handle) makeDraggable(widget, handle);
+    });
+
+    // ── Background switcher ─────────────────────────────────
+
+    var bgData = [
+        { file: 'forest_dense_bg.png',        label: 'Dense Forest' },
+        { file: 'forest_misty_bg.png',         label: 'Misty Morning' },
+        { file: 'forest_palette_bg.png',       label: 'Golden Hour' },
+        { file: 'forest_topleft_light_bg.png', label: 'Sunlit Path' },
+        { file: 'meditate_forest_bg.png',      label: 'Zen Garden' },
+    ];
+
+    var currentBg  = bgData[0].file;
+    var fallingEl  = document.getElementById('fallingLeaves');
+    var bgGrid     = document.getElementById('bgGrid');
+
+    if (bgGrid) {
+        bgData.forEach(function (bg, idx) {
+            var card = document.createElement('div');
+            card.className = 'bg-card' + (idx === 0 ? ' active' : '');
+            card.style.backgroundImage = "url('asset/img/" + bg.file + "')";
+            card.title = bg.label;
+
+            var label = document.createElement('span');
+            label.className = 'bg-label';
+            label.textContent = bg.label;
+            card.appendChild(label);
+
+            card.addEventListener('click', function () {
+                currentBg = bg.file;
+                if (fallingEl) {
+                    fallingEl.style.backgroundImage = "url('asset/img/" + bg.file + "')";
+                }
+                document.querySelectorAll('.bg-card').forEach(function (c) {
+                    c.classList.remove('active');
+                });
+                card.classList.add('active');
+            });
+
+            bgGrid.appendChild(card);
+        });
+    }
+
+    // ── Fullscreen toggle ───────────────────────────────────
+
+    var btnFullscreen = document.getElementById('btnFullscreen');
+    if (btnFullscreen) {
+        btnFullscreen.addEventListener('click', function () {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(function () {});
+            } else {
+                document.exitFullscreen().catch(function () {});
+            }
+        });
+
+        document.addEventListener('fullscreenchange', function () {
+            btnFullscreen.title = document.fullscreenElement ? 'Exit Fullscreen' : 'Toggle Fullscreen';
+        });
+    }
+
+});
