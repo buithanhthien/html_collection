@@ -26,12 +26,24 @@
 
     <!-- ── Sidebar navigation ── -->
     <nav class="sidebar" id="sidebar">
-        <div class="sidebar-logo" title="Pomodoro Forest">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M17 8C8 10 5.9 16.17 3.82 22"/>
-                <path d="M9.5 4c2 2.5 3 7 3 7"/>
-                <path d="M10 4 7 7"/>
-                <path d="M22 22c-1-5-2.5-9-5-12"/>
+        <div class="sidebar-logo" title="Thiên">
+            <svg width="42" height="38" viewBox="0 0 200 180" fill="none" stroke="#8ec4e4" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+                <!-- Big top loop: starts mid, curves up-left, over, and back down -->
+                <path d="M80 95 C78 70, 72 45, 65 30 C58 15, 45 10, 38 18 C28 28, 30 52, 42 68 C52 80, 68 85, 78 80"/>
+                <!-- Stem continues straight down from ~80,80 to bottom, angling left -->
+                <path d="M78 80 C76 100, 70 120, 62 140 C56 155, 48 165, 44 168 C40 171, 36 168, 38 163 C40 158, 48 158, 52 163 C56 168, 54 172, 50 172"/>
+                <!-- Horizontal crossbar -->
+                <path d="M38 118 C55 114, 75 110, 95 108"/>
+                <!-- h: tall stem then hump -->
+                <path d="M90 130 C90 108, 90 108, 90 108 M90 118 C93 112, 100 109, 105 112 C110 115, 109 124, 105 128"/>
+                <!-- i: short stem -->
+                <path d="M105 128 C105 124, 106 118, 107 122 C108 126, 107 130, 106 130"/>
+                <!-- e: small loop -->
+                <path d="M107 122 C110 116, 117 116, 119 120 C121 124, 119 130, 114 130 C109 130, 107 126, 109 122"/>
+                <!-- n: hump -->
+                <path d="M115 130 C117 124, 122 120, 126 122 C130 124, 130 132, 126 134"/>
+                <!-- long diagonal slash -->
+                <path d="M128 118 C138 104, 150 88, 162 72"/>
             </svg>
         </div>
 
@@ -86,6 +98,12 @@
                     <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
                     <circle cx="8.5" cy="8.5" r="1.5"/>
                     <polyline points="21 15 16 10 5 21"/>
+                </svg>
+            </button>
+            <!-- For You -->
+            <button class="sidebar-btn" data-target="widgetLetter" id="navLetter" title="For You">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
                 </svg>
             </button>
         </div>
@@ -370,6 +388,30 @@
         </div>
     </div>
 
+    <!-- ── For You / Letter Widget ── -->
+    <div class="widget widget--letter" id="widgetLetter" role="dialog" aria-label="For You">
+        <div class="widget-header" id="widgetLetterHandle">
+            <svg class="drag-dots" width="12" height="16" viewBox="0 0 8 12" fill="currentColor">
+                <circle cx="2" cy="2" r="1.2"/><circle cx="6" cy="2" r="1.2"/>
+                <circle cx="2" cy="6" r="1.2"/><circle cx="6" cy="6" r="1.2"/>
+                <circle cx="2" cy="10" r="1.2"/><circle cx="6" cy="10" r="1.2"/>
+            </svg>
+            <span class="widget-title">For You</span>
+            <div class="widget-header-actions">
+                <button class="widget-close-btn" data-target="widgetLetter" aria-label="Close Letter">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
+            </div>
+        </div>
+        <div class="widget-body letter-body">
+            <div class="letter-paper">
+                <p class="letter-to">Gửi Vy,</p>
+                <p class="letter-content">Tuy đây chỉ là một chiếc app nhỏ nhỏ nhưng mong Vy sẽ thích nó.</p>
+                <p class="letter-from">— Thiên</p>
+            </div>
+        </div>
+    </div>
+
     <!-- ── Settings overlay (full-screen modal) ── -->
     <div class="settings-overlay" id="settingsOverlay">
         <div class="settings-modal">
@@ -453,6 +495,7 @@
     <script src="music.js"></script>
     <script src="sounds.js"></script>
     <script src="notes.js"></script>
+    <script src="letter.js"></script>
 </body>
 
 </html>

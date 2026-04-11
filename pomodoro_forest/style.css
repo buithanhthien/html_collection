@@ -95,15 +95,19 @@ html, body {
 }
 
 .sidebar-logo {
-    width: 40px;
-    height: 40px;
+    width: 46px;
+    height: 46px;
     display: flex;
     align-items: center;
     justify-content: center;
     color: #8ec4e4;
     margin-bottom: 20px;
     flex-shrink: 0;
+    opacity: 0.85;
+    transition: opacity 0.2s ease;
 }
+
+.sidebar-logo:hover { opacity: 1; }
 
 .sidebar-nav {
     display: flex;
@@ -339,6 +343,94 @@ html, body {
     left: calc(50vw - 220px + 34px);
     top: calc(50vh - 200px);
     width: 440px;
+}
+
+.widget--letter {
+    left: calc(50vw - 190px + 34px);
+    top: calc(50vh - 280px);
+    width: 380px;
+    overflow: hidden;
+}
+
+.widget--letter .letter-body {
+    overflow-y: auto;
+    max-height: calc(90vh - 60px);
+}
+
+/* ============================================================
+   LETTER widget
+   ============================================================ */
+
+.letter-body {
+    padding: 0;
+    gap: 0;
+    max-height: none;
+    overflow: visible;
+}
+
+.letter-paper {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    padding: 24px 26px 20px;
+    background: rgba(255, 248, 235, 0.04);
+    font-family: 'Space Grotesk', sans-serif;
+}
+
+.letter-to {
+    color: #F9E1A8;
+    font-size: 14px;
+    font-weight: 600;
+    margin: 0 0 18px;
+    letter-spacing: 0.2px;
+}
+
+.letter-content {
+    color: #f0f1f2;
+    font-size: 13.5px;
+    line-height: 1.9;
+    margin: 0;
+    white-space: pre-wrap;
+}
+
+.letter-from {
+    color: #F9E1A8;
+    font-size: 13px;
+    font-weight: 600;
+    margin: 20px 0 0;
+    text-align: right;
+    letter-spacing: 0.2px;
+}
+
+.letter-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 16px 12px;
+}
+
+.letter-char-count {
+    font-size: 10px;
+    color: rgba(214, 229, 189, 0.35);
+    letter-spacing: 0.3px;
+}
+
+.letter-clear-btn {
+    background: transparent;
+    border: 1px solid rgba(214, 229, 189, 0.12);
+    border-radius: 7px;
+    color: rgba(214, 229, 189, 0.4);
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 11px;
+    padding: 4px 10px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.letter-clear-btn:hover {
+    background: rgba(255, 203, 225, 0.1);
+    color: rgba(255, 203, 225, 0.8);
+    border-color: transparent;
 }
 
 /* ============================================================
