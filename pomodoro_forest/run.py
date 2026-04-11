@@ -2,10 +2,22 @@
 import os
 import json
 import webbrowser
+import urllib.request
+import urllib.parse
 from http.server import HTTPServer, SimpleHTTPRequestHandler
 import threading
 
 IMAGE_EXTS = {'.png', '.jpg', '.jpeg', '.webp', '.gif', '.avif'}
+
+CONTENT_TYPE_MAP = {
+    '.gif':  'image/gif',
+    '.jpg':  'image/jpeg',
+    '.jpeg': 'image/jpeg',
+    '.png':  'image/png',   
+    '.webp': 'image/webp',
+    '.avif': 'image/avif',
+    '.svg':  'image/svg+xml',
+}
 
 class MusicServer(SimpleHTTPRequestHandler):
     def log_message(self, format, *args):
@@ -26,6 +38,35 @@ class MusicServer(SimpleHTTPRequestHandler):
             self.end_headers()
             self.wfile.write(body)
             return
+
+        if self.path.startswith('/api/proxy?'):
+            qs = urllib.parse.parse_qs(self.path.split('?', 1)[1])
+            url = qs.get('url', [None])[0]
+            if not url:
+                self.send_error(400, 'Missing url parameter')
+                return
+            try:
+                req = urllib.request.Request(url, headers={
+                    'User-Agent': 'Mozilla/5.0',
+                    'Referer': url,
+                })
+                with urllib.request.urlopen(req, timeout=10) as resp:
+                    data = resp.read()
+                    ct = resp.headers.get('Content-Type', '')
+                    # Fallback: guess from URL extension
+                    if not ct or ct == 'application/octet-stream':
+                        ext = os.path.splitext(url.split('?')[0])[1].lower()
+                        ct = CONTENT_TYPE_MAP.get(ext, 'application/octet-stream')
+                self.send_response(200)
+                self.send_header('Content-Type', ct)
+                self.send_header('Content-Length', len(data))
+                self.send_header('Access-Control-Allow-Origin', '*')
+                self.end_headers()
+                self.wfile.write(data)
+            except Exception as e:
+                self.send_error(502, f'Proxy error: {e}')
+            return
+
         super().do_GET()
 
     def end_headers(self):

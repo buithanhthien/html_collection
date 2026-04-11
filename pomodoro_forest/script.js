@@ -319,7 +319,11 @@ document.addEventListener('DOMContentLoaded', function () {
     function applyDirectMediaUrl(url) {
         stopSceneYoutube();
         if (!fallingEl) return;
-        fallingEl.style.backgroundImage = "url('" + url + "')";
+        // Route external URLs through the local proxy to avoid CORS blocks
+        var src = /^https?:\/\//i.test(url)
+            ? '/api/proxy?url=' + encodeURIComponent(url)
+            : url;
+        fallingEl.style.backgroundImage = "url('" + src + "')";
         fallingEl.style.backgroundColor = '';
         document.querySelectorAll('.bg-card').forEach(function (c) {
             c.classList.remove('active');
