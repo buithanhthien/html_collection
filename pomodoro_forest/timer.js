@@ -280,13 +280,14 @@ class PomodoroTimer {
     }
 
     _saveSettings() {
+        const parse = (val, def) => { const n = parseInt(val); return isNaN(n) ? def : n; };
         const s = {
-            pomodoro: Math.max(1, Math.min(90, parseInt(this.inPomodoro.value) || 25)),
-            short: Math.max(1, Math.min(30, parseInt(this.inShort.value) || 5)),
-            long: Math.max(1, Math.min(60, parseInt(this.inLong.value) || 15)),
-            sessions: Math.max(1, Math.min(10, parseInt(this.inSessions.value) || 4)),
-            sound: this.inSound.checked,
-            volume: parseInt(this.inVolume.value) || 60,
+            pomodoro: Math.max(1, Math.min(90, parse(this.inPomodoro.value, 25))),
+            short:    Math.max(1, Math.min(30, parse(this.inShort.value, 5))),
+            long:     Math.max(1, Math.min(60, parse(this.inLong.value, 15))),
+            sessions: Math.max(1, Math.min(10, parse(this.inSessions.value, 4))),
+            sound:    this.inSound.checked,
+            volume:   parse(this.inVolume.value, 60),
         };
         this.settings = s;
         saveSettings(s);

@@ -165,6 +165,11 @@ document.addEventListener('DOMContentLoaded', function () {
     updateClock();
     setInterval(updateClock, 1000);
 
+    // ── Heartbeat: keep server alive; server exits when pings stop ──
+    function ping() { fetch('/api/ping').catch(function(){}); }
+    ping();
+    setInterval(ping, 5000);
+
     // ── Sidebar toggle ──────────────────────────────────────
 
     var sidebarBtns = document.querySelectorAll('.sidebar-btn[data-target]');
@@ -372,6 +377,7 @@ document.addEventListener('DOMContentLoaded', function () {
     function buildBgGrid(files) {
         if (!bgGrid) return;
         bgGrid.innerHTML = '';
+        if (!files || files.length === 0) return;
         files.forEach(function (file, idx) {
             var label = file.replace(/\.[^.]+$/, '').replace(/[-_]/g, ' ');
             var card = document.createElement('div');

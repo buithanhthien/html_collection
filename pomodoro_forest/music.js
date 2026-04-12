@@ -164,6 +164,7 @@ btnPlayPause.addEventListener('click', () => {
 progressBar.addEventListener('pointerdown', () => { isProgressScrubbing = true; });
 window.addEventListener('pointerup',     () => { isProgressScrubbing = false; });
 window.addEventListener('pointercancel', () => { isProgressScrubbing = false; });
+window.addEventListener('blur',          () => { isProgressScrubbing = false; });
 
 progressBar.addEventListener('input', (e) => {
     const t = Number(e.target.value);
