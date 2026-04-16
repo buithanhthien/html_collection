@@ -300,6 +300,9 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!fallingEl) return;
         stopSceneYoutube();
         fallingEl.style.backgroundImage = "url('asset/img/" + file + "')";
+        fallingEl.style.backgroundSize = 'cover';
+        fallingEl.style.backgroundPosition = 'center';
+        fallingEl.style.backgroundRepeat = 'no-repeat';
         fallingEl.style.backgroundColor = '';
     }
 
@@ -324,12 +327,14 @@ document.addEventListener('DOMContentLoaded', function () {
     function applyDirectMediaUrl(url) {
         stopSceneYoutube();
         if (!fallingEl) return;
-        // Route external URLs through the local proxy to avoid CORS blocks
         var src = /^https?:\/\//i.test(url)
             ? '/api/proxy?url=' + encodeURIComponent(url)
             : url;
         fallingEl.style.backgroundImage = "url('" + src + "')";
-        fallingEl.style.backgroundColor = '';
+        fallingEl.style.backgroundSize = 'auto';
+        fallingEl.style.backgroundPosition = 'center';
+        fallingEl.style.backgroundRepeat = 'no-repeat';
+        fallingEl.style.backgroundColor = '#1c1828';
         document.querySelectorAll('.bg-card').forEach(function (c) {
             c.classList.remove('active');
         });

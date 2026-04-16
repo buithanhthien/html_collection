@@ -1,2 +1,14 @@
-asset/sound/*.mp3
-asset/sound/playlist.txt
+# Local sound assets (not tracked)
+pomodoro_forest/asset/sound/*.mp3
+pomodoro_forest/asset/sound/playlist.txt
+
+# PyInstaller build outputs
+pomodoro_forest/build/
+pomodoro_forest/dist/
+
+# Python cache
+pomodoro_forest/__pycache__/
+pomodoro_forest/*.pyc
+
+# VS Code workspace settings
+.vscode/
