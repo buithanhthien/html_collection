@@ -270,10 +270,60 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Attach draggable to all widgets
+    // ── Resizable widgets (bottom-left / bottom-right corner drag) ──────────
+
+    function makeResizable(widget) {
+        widget.querySelectorAll('.resize-handle').forEach(function (handle) {
+            handle.addEventListener('mousedown', function (e) {
+                e.preventDefault();
+                e.stopPropagation(); // don't trigger the drag handler
+
+                var isLeft  = handle.classList.contains('resize-handle--bl');
+                var startX  = e.clientX;
+                var startY  = e.clientY;
+                var startW  = widget.offsetWidth;
+                var startH  = widget.offsetHeight;
+                var startL  = widget.getBoundingClientRect().left;
+                var minW    = 200;
+                var minH    = 80;
+
+                // Freeze explicit dimensions so CSS width/height apply cleanly
+                widget.style.width  = startW + 'px';
+                widget.style.height = startH + 'px';
+
+                function onMove(e) {
+                    var dx  = e.clientX - startX;
+                    var dy  = e.clientY - startY;
+                    var newH = Math.max(minH, startH + dy);
+                    widget.style.height = newH + 'px';
+
+                    if (isLeft) {
+                        var newW   = Math.max(minW, startW - dx);
+                        var newL   = startL + (startW - newW);
+                        widget.style.width = newW + 'px';
+                        widget.style.left  = newL + 'px';
+                        widget.style.right = 'auto';
+                    } else {
+                        widget.style.width = Math.max(minW, startW + dx) + 'px';
+                    }
+                }
+
+                function onUp() {
+                    document.removeEventListener('mousemove', onMove);
+                    document.removeEventListener('mouseup',   onUp);
+                }
+
+                document.addEventListener('mousemove', onMove);
+                document.addEventListener('mouseup',   onUp);
+            });
+        });
+    }
+
+    // Attach draggable + resizable to all widgets
     document.querySelectorAll('.widget').forEach(function (widget) {
         var handle = widget.querySelector('.widget-header');
         if (handle) makeDraggable(widget, handle);
+        makeResizable(widget);
     });
 
     // ── Background switcher (still images + optional muted YouTube URL) ─────
@@ -331,8 +381,10 @@ document.addEventListener('DOMContentLoaded', function () {
             ? '/api/proxy?url=' + encodeURIComponent(url)
             : url;
         fallingEl.style.backgroundImage = "url('" + src + "')";
-        fallingEl.style.backgroundSize = 'auto';
-        fallingEl.style.backgroundPosition = 'center';
+        // 'contain' shows the full image without cropping.
+        // The dark base bg (#1c1828) fills any empty space around it.
+        fallingEl.style.backgroundSize = 'contain';
+        fallingEl.style.backgroundPosition = 'center center';
         fallingEl.style.backgroundRepeat = 'no-repeat';
         fallingEl.style.backgroundColor = '#1c1828';
         document.querySelectorAll('.bg-card').forEach(function (c) {

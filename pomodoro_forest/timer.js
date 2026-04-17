@@ -229,6 +229,8 @@ class PomodoroTimer {
         } else {
             this._switchMode('pomodoro');
         }
+        // Auto-start the next mode immediately
+        this._start();
     }
 
     _switchMode(mode) {
