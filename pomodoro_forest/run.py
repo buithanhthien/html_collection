@@ -103,7 +103,12 @@ def _watchdog():
 
 
 def start_server():
-    os.chdir(os.path.dirname(os.path.abspath(__file__)))
+    import sys
+    if getattr(sys, 'frozen', False):
+        base_dir = sys._MEIPASS
+    else:
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+    os.chdir(base_dir)
 
     server = HTTPServer(('', 8000), MusicServer)
     threading.Thread(target=server.serve_forever, daemon=True).start()

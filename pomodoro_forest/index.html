@@ -106,6 +106,12 @@
                     <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
                 </svg>
             </button>
+            <!-- Confetti -->
+            <button class="sidebar-btn" data-target="widgetConfetti" id="navConfetti" title="Confetti Effects">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3l1.9 5.8 1.9-5.8a2 2 0 0 1 1.3-1.3l5.8-1.9-5.8-1.9a2 2 0 0 1-1.3-1.3z" />
+                </svg>
+            </button>
         </div>
 
         <div class="sidebar-bottom">
@@ -428,6 +434,228 @@
         <div class="resize-handle resize-handle--br" aria-hidden="true"></div>
     </div>
 
+    <!-- ── Confetti Widget ── -->
+    <div class="widget widget--confetti" id="widgetConfetti" role="dialog" aria-label="Confetti Effects">
+        <div class="widget-header" id="widgetConfettiHandle">
+            <svg class="drag-dots" width="12" height="16" viewBox="0 0 8 12" fill="currentColor">
+                <circle cx="2" cy="2" r="1.2"/><circle cx="6" cy="2" r="1.2"/>
+                <circle cx="2" cy="6" r="1.2"/><circle cx="6" cy="6" r="1.2"/>
+                <circle cx="2" cy="10" r="1.2"/><circle cx="6" cy="10" r="1.2"/>
+            </svg>
+            <span class="widget-title">Confetti</span>
+            <div class="widget-header-actions">
+                <button class="widget-close-btn" data-target="widgetConfetti" aria-label="Close Confetti">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
+            </div>
+        </div>
+        <div class="widget-body" style="padding:14px;gap:10px;">
+            <div class="confetti-cards">
+
+                <!-- Star Burst card -->
+                <div class="confetti-card star-card" id="confettiStarCard">
+                    <div class="confetti-preview" id="confettiStarPreview" title="Click to preview">
+                        <span class="confetti-preview-icon">★</span>
+                        <span class="confetti-preview-hint">Click to preview</span>
+                    </div>
+                    <div class="confetti-card-footer">
+                        <span class="confetti-card-name">Star Burst</span>
+                        <div class="confetti-card-right">
+                            <span class="confetti-card-status" id="confettiStarStatus">OFF</span>
+                            <div class="confetti-pill" id="confettiStarPill" title="Enable Star Burst on timer end"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bubble Rain card -->
+                <div class="confetti-card bubble-card" id="confettiBubbleCard">
+                    <div class="confetti-preview" id="confettiBubblePreview" title="Click to preview">
+                        <span class="confetti-preview-icon">◆</span>
+                        <span class="confetti-preview-hint">Click to preview</span>
+                    </div>
+                    <div class="confetti-card-footer">
+                        <span class="confetti-card-name">Bubble Rain</span>
+                        <div class="confetti-card-right">
+                            <span class="confetti-card-status" id="confettiBubbleStatus">OFF</span>
+                            <div class="confetti-pill" id="confettiBubblePill" title="Enable Bubble Rain on timer end"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Petal Fall card -->
+                <div class="confetti-card petal-card" id="confettiPetalCard">
+                    <div class="confetti-preview" id="confettiPetalPreview" title="Click to preview">
+                        <span class="confetti-preview-icon">❀</span>
+                        <span class="confetti-preview-hint">Click to preview</span>
+                    </div>
+                    <div class="confetti-card-footer">
+                        <span class="confetti-card-name">Petal Fall</span>
+                        <div class="confetti-card-right">
+                            <span class="confetti-card-status" id="confettiPetalStatus">OFF</span>
+                            <div class="confetti-pill" id="confettiPetalPill" title="Enable Petal Fall on timer end"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Firefly Swarm card -->
+                <div class="confetti-card firefly-card" id="confettiFireflyCard">
+                    <div class="confetti-preview" id="confettiFireflyPreview" title="Click to preview">
+                        <span class="confetti-preview-icon">∘</span>
+                        <span class="confetti-preview-hint">Click to preview</span>
+                    </div>
+                    <div class="confetti-card-footer">
+                        <span class="confetti-card-name">Firefly Swarm</span>
+                        <div class="confetti-card-right">
+                            <span class="confetti-card-status" id="confettiFireflyStatus">OFF</span>
+                            <div class="confetti-pill" id="confettiFireflyPill" title="Enable Firefly Swarm on timer end"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Leaf Shower card -->
+                <div class="confetti-card leaf-card" id="confettiLeafCard">
+                    <div class="confetti-preview" id="confettiLeafPreview" title="Click to preview">
+                        <span class="confetti-preview-icon">❧</span>
+                        <span class="confetti-preview-hint">Click to preview</span>
+                    </div>
+                    <div class="confetti-card-footer">
+                        <span class="confetti-card-name">Leaf Shower</span>
+                        <div class="confetti-card-right">
+                            <span class="confetti-card-status" id="confettiLeafStatus">OFF</span>
+                            <div class="confetti-pill" id="confettiLeafPill" title="Enable Leaf Shower on timer end"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gold Confetti card -->
+                <div class="confetti-card gold-card" id="confettiGoldCard">
+                    <div class="confetti-preview" id="confettiGoldPreview" title="Click to preview">
+                        <span class="confetti-preview-icon">▪</span>
+                        <span class="confetti-preview-hint">Click to preview</span>
+                    </div>
+                    <div class="confetti-card-footer">
+                        <span class="confetti-card-name">Gold Confetti</span>
+                        <div class="confetti-card-right">
+                            <span class="confetti-card-status" id="confettiGoldStatus">OFF</span>
+                            <div class="confetti-pill" id="confettiGoldPill" title="Enable Gold Confetti on timer end"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Aurora Ribbons card -->
+                <div class="confetti-card aurora-card" id="confettiAuroraCard">
+                    <div class="confetti-preview" id="confettiAuroraPreview" title="Click to preview">
+                        <span class="confetti-preview-icon">≋</span>
+                        <span class="confetti-preview-hint">Click to preview</span>
+                    </div>
+                    <div class="confetti-card-footer">
+                        <span class="confetti-card-name">Aurora Ribbons</span>
+                        <div class="confetti-card-right">
+                            <span class="confetti-card-status" id="confettiAuroraStatus">OFF</span>
+                            <div class="confetti-pill" id="confettiAuroraPill" title="Enable Aurora Ribbons on timer end"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Emoji Pop card -->
+                <div class="confetti-card emoji-card" id="confettiEmojiCard">
+                    <div class="confetti-preview" id="confettiEmojiPreview" title="Click to preview">
+                        <span class="confetti-preview-icon">✨</span>
+                        <span class="confetti-preview-hint">Click to preview</span>
+                    </div>
+                    <div class="confetti-card-footer">
+                        <span class="confetti-card-name">Emoji Pop</span>
+                        <div class="confetti-card-right">
+                            <span class="confetti-card-status" id="confettiEmojiStatus">OFF</span>
+                            <div class="confetti-pill" id="confettiEmojiPill" title="Enable Emoji Pop on timer end"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Fountain card -->
+                <div class="confetti-card fountain-card" id="confettiFountainCard">
+                    <div class="confetti-preview" id="confettiFountainPreview" title="Click to preview">
+                        <span class="confetti-preview-icon">↑</span>
+                        <span class="confetti-preview-hint">Click to preview</span>
+                    </div>
+                    <div class="confetti-card-footer">
+                        <span class="confetti-card-name">Fountain</span>
+                        <div class="confetti-card-right">
+                            <span class="confetti-card-status" id="confettiFountainStatus">OFF</span>
+                            <div class="confetti-pill" id="confettiFountainPill" title="Enable Fountain on timer end"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ring Pulse card -->
+                <div class="confetti-card ring-card" id="confettiRingCard">
+                    <div class="confetti-preview" id="confettiRingPreview" title="Click to preview">
+                        <span class="confetti-preview-icon">◯</span>
+                        <span class="confetti-preview-hint">Click to preview</span>
+                    </div>
+                    <div class="confetti-card-footer">
+                        <span class="confetti-card-name">Ring Pulse</span>
+                        <div class="confetti-card-right">
+                            <span class="confetti-card-status" id="confettiRingStatus">OFF</span>
+                            <div class="confetti-pill" id="confettiRingPill" title="Enable Ring Pulse on timer end"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Rain Down card -->
+                <div class="confetti-card rain-card" id="confettiRainCard">
+                    <div class="confetti-preview" id="confettiRainPreview" title="Click to preview">
+                        <span class="confetti-preview-icon">╎</span>
+                        <span class="confetti-preview-hint">Click to preview</span>
+                    </div>
+                    <div class="confetti-card-footer">
+                        <span class="confetti-card-name">Rain Down</span>
+                        <div class="confetti-card-right">
+                            <span class="confetti-card-status" id="confettiRainStatus">OFF</span>
+                            <div class="confetti-pill" id="confettiRainPill" title="Enable Rain Down on timer end"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cannons card (canvas-confetti) -->
+                <div class="confetti-card cannons-card" id="confettiCannonsCard">
+                    <div class="confetti-preview" id="confettiCannonsPreview" title="Click to preview">
+                        <span class="confetti-preview-icon">🎉</span>
+                        <span class="confetti-preview-hint">Click to preview</span>
+                    </div>
+                    <div class="confetti-card-footer">
+                        <span class="confetti-card-name">Cannons</span>
+                        <div class="confetti-card-right">
+                            <span class="confetti-card-status" id="confettiCannonsStatus">OFF</span>
+                            <div class="confetti-pill" id="confettiCannonsPill" title="Enable Cannons on timer end"></div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <!-- Fireworks card -->
+                <div class="confetti-card fireworks-card" id="confettiFireworksCard">
+                    <div class="confetti-preview" id="confettiFireworksPreview" title="Click to preview">
+                        <span class="confetti-preview-icon">🎇</span>
+                        <span class="confetti-preview-hint">Click to preview</span>
+                    </div>
+                    <div class="confetti-card-footer">
+                        <span class="confetti-card-name">Fireworks</span>
+                        <div class="confetti-card-right">
+                            <span class="confetti-card-status" id="confettiFireworksStatus">OFF</span>
+                            <div class="confetti-pill" id="confettiFireworksPill" title="Enable Fireworks on timer end"></div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <p class="confetti-section-hint">Toggle on to auto-fire when the timer reaches zero. Click a preview to see the effect.</p>
+        </div>
+        <div class="resize-handle resize-handle--bl" aria-hidden="true"></div>
+        <div class="resize-handle resize-handle--br" aria-hidden="true"></div>
+    </div>
+
     <!-- ── Settings overlay (full-screen modal) ── -->
     <div class="settings-overlay" id="settingsOverlay">
         <div class="settings-modal">
@@ -446,25 +674,31 @@
 
                 <div class="setting-row">
                     <label class="setting-label" for="settingPomodoro">Focus</label>
-                    <div class="setting-control">
-                        <input type="number" class="setting-input" id="settingPomodoro" min="1" max="99" value="25">
-                        <span class="setting-unit">min</span>
+                    <div class="setting-control" style="gap: 5px;">
+                        <input type="number" class="setting-input" style="width: 48px;" id="settingPomodoro" min="0" max="99" value="25" title="Minutes">
+                        <span class="setting-unit">m</span>
+                        <input type="number" class="setting-input" style="width: 48px;" id="settingPomodoroSec" min="0" max="59" value="0" title="Seconds">
+                        <span class="setting-unit">s</span>
                     </div>
                 </div>
 
                 <div class="setting-row">
                     <label class="setting-label" for="settingShort">Short break</label>
-                    <div class="setting-control">
-                        <input type="number" class="setting-input" id="settingShort" min="1" max="30" value="5">
-                        <span class="setting-unit">min</span>
+                    <div class="setting-control" style="gap: 5px;">
+                        <input type="number" class="setting-input" style="width: 48px;" id="settingShort" min="0" max="99" value="5" title="Minutes">
+                        <span class="setting-unit">m</span>
+                        <input type="number" class="setting-input" style="width: 48px;" id="settingShortSec" min="0" max="59" value="0" title="Seconds">
+                        <span class="setting-unit">s</span>
                     </div>
                 </div>
 
                 <div class="setting-row">
                     <label class="setting-label" for="settingLong">Long break</label>
-                    <div class="setting-control">
-                        <input type="number" class="setting-input" id="settingLong" min="1" max="60" value="15">
-                        <span class="setting-unit">min</span>
+                    <div class="setting-control" style="gap: 5px;">
+                        <input type="number" class="setting-input" style="width: 48px;" id="settingLong" min="0" max="99" value="15" title="Minutes">
+                        <span class="setting-unit">m</span>
+                        <input type="number" class="setting-input" style="width: 48px;" id="settingLongSec" min="0" max="59" value="0" title="Seconds">
+                        <span class="setting-unit">s</span>
                     </div>
                 </div>
 
@@ -505,6 +739,8 @@
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+    <script src="fireworks.js"></script>
     <script src="script.js"></script>
     <script src="timer.js"></script>
     <script src="tasks.js"></script>

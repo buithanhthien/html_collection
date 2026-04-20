@@ -1,10 +1,15 @@
-*, *::before, *::after { box-sizing: border-box; }
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
 
 /* ============================================================
    BASE — fullscreen immersive layout
    ============================================================ */
 
-html, body {
+html,
+body {
     height: 100%;
     width: 100%;
     margin: 0;
@@ -107,7 +112,9 @@ html, body {
     transition: opacity 0.2s ease;
 }
 
-.sidebar-logo:hover { opacity: 1; }
+.sidebar-logo:hover {
+    opacity: 1;
+}
 
 .sidebar-nav {
     display: flex;
@@ -248,7 +255,9 @@ html, body {
     user-select: none;
 }
 
-.widget-header:active { cursor: grabbing; }
+.widget-header:active {
+    cursor: grabbing;
+}
 
 .drag-dots {
     color: rgba(214, 229, 189, 0.2);
@@ -302,8 +311,14 @@ html, body {
     scrollbar-color: rgba(142, 196, 228, 0.3) transparent;
 }
 
-.widget-body::-webkit-scrollbar { width: 4px; }
-.widget-body::-webkit-scrollbar-thumb { background: rgba(142, 196, 228, 0.3); border-radius: 4px; }
+.widget-body::-webkit-scrollbar {
+    width: 4px;
+}
+
+.widget-body::-webkit-scrollbar-thumb {
+    background: rgba(142, 196, 228, 0.3);
+    border-radius: 4px;
+}
 
 /* ============================================================
    WIDGET POSITIONS (initial, overridden by JS drag)
@@ -581,7 +596,9 @@ html, body {
     box-shadow: 0 6px 22px rgba(184, 160, 224, 0.55);
 }
 
-.btn-start:active { transform: translateY(0); }
+.btn-start:active {
+    transform: translateY(0);
+}
 
 .btn-icon {
     background: rgba(214, 229, 189, 0.07);
@@ -603,7 +620,9 @@ html, body {
     transform: scale(1.08);
 }
 
-.btn-icon:active { transform: scale(0.94); }
+.btn-icon:active {
+    transform: scale(0.94);
+}
 
 /* Session dots */
 .session-tracker {
@@ -634,8 +653,15 @@ html, body {
 }
 
 @keyframes dotPulse {
-    0%, 100% { box-shadow: 0 0 0 0 rgba(214, 229, 189, 0.25); }
-    50%       { box-shadow: 0 0 0 4px rgba(214, 229, 189, 0.06); }
+
+    0%,
+    100% {
+        box-shadow: 0 0 0 0 rgba(214, 229, 189, 0.25);
+    }
+
+    50% {
+        box-shadow: 0 0 0 4px rgba(214, 229, 189, 0.06);
+    }
 }
 
 /* Quick-action buttons in header (mute + settings) */
@@ -660,9 +686,13 @@ html, body {
     color: #D6E5BD;
 }
 
-.btn-settings:hover { transform: rotate(45deg); }
+.btn-settings:hover {
+    transform: rotate(45deg);
+}
 
-.btn-mute.muted { color: rgba(214, 229, 189, 0.22); }
+.btn-mute.muted {
+    color: rgba(214, 229, 189, 0.22);
+}
 
 /* Music playing indicator */
 .music-indicator {
@@ -693,14 +723,36 @@ html, body {
     animation: barBounce 0.8s ease-in-out infinite;
 }
 
-.music-bars span:nth-child(1) { height: 5px;  animation-delay: 0s; }
-.music-bars span:nth-child(2) { height: 9px;  animation-delay: 0.15s; }
-.music-bars span:nth-child(3) { height: 13px; animation-delay: 0.3s; }
-.music-bars span:nth-child(4) { height: 7px;  animation-delay: 0.45s; }
+.music-bars span:nth-child(1) {
+    height: 5px;
+    animation-delay: 0s;
+}
+
+.music-bars span:nth-child(2) {
+    height: 9px;
+    animation-delay: 0.15s;
+}
+
+.music-bars span:nth-child(3) {
+    height: 13px;
+    animation-delay: 0.3s;
+}
+
+.music-bars span:nth-child(4) {
+    height: 7px;
+    animation-delay: 0.45s;
+}
 
 @keyframes barBounce {
-    0%, 100% { transform: scaleY(0.4); }
-    50%       { transform: scaleY(1); }
+
+    0%,
+    100% {
+        transform: scaleY(0.4);
+    }
+
+    50% {
+        transform: scaleY(1);
+    }
 }
 
 .music-label {
@@ -732,8 +784,13 @@ html, body {
     transition: border-color 0.2s ease;
 }
 
-.task-input::placeholder { color: rgba(214, 229, 189, 0.35); }
-.task-input:focus { border-color: rgba(142, 196, 228, 0.5); }
+.task-input::placeholder {
+    color: rgba(214, 229, 189, 0.35);
+}
+
+.task-input:focus {
+    border-color: rgba(142, 196, 228, 0.5);
+}
 
 .task-add-btn {
     width: 38px;
@@ -751,8 +808,14 @@ html, body {
     box-shadow: 0 2px 10px rgba(184, 160, 224, 0.4);
 }
 
-.task-add-btn:hover { background: #cbbcec; transform: scale(1.06); }
-.task-add-btn:active { transform: scale(0.94); }
+.task-add-btn:hover {
+    background: #cbbcec;
+    transform: scale(1.06);
+}
+
+.task-add-btn:active {
+    transform: scale(0.94);
+}
 
 .task-list {
     list-style: none;
@@ -767,8 +830,14 @@ html, body {
     scrollbar-color: rgba(142, 196, 228, 0.3) transparent;
 }
 
-.task-list::-webkit-scrollbar { width: 4px; }
-.task-list::-webkit-scrollbar-thumb { background: rgba(142, 196, 228, 0.3); border-radius: 4px; }
+.task-list::-webkit-scrollbar {
+    width: 4px;
+}
+
+.task-list::-webkit-scrollbar-thumb {
+    background: rgba(142, 196, 228, 0.3);
+    border-radius: 4px;
+}
 
 .task-item {
     display: flex;
@@ -781,7 +850,9 @@ html, body {
     transition: background 0.2s ease;
 }
 
-.task-item:hover { background: rgba(0, 0, 0, 0.28); }
+.task-item:hover {
+    background: rgba(0, 0, 0, 0.28);
+}
 
 .task-item.completed .task-text {
     text-decoration: line-through;
@@ -838,7 +909,9 @@ html, body {
     transition: all 0.15s ease;
 }
 
-.task-item:hover .task-delete { opacity: 1; }
+.task-item:hover .task-delete {
+    opacity: 1;
+}
 
 .task-delete:hover {
     background: rgba(255, 203, 225, 0.12);
@@ -869,7 +942,9 @@ html, body {
     box-shadow: 0 2px 8px rgba(184, 160, 224, 0.4);
 }
 
-.task-count:empty { display: none; }
+.task-count:empty {
+    display: none;
+}
 
 /* ============================================================
    AMBIENT SOUNDS widget
@@ -977,7 +1052,9 @@ html, body {
     flex-shrink: 0;
 }
 
-.sound-row.active .sound-slider { opacity: 1; }
+.sound-row.active .sound-slider {
+    opacity: 1;
+}
 
 .sound-slider::-webkit-slider-thumb {
     -webkit-appearance: none;
@@ -1023,11 +1100,18 @@ html, body {
     transform: rotate(90deg);
 }
 
-.music-refresh-btn.spinning { animation: spin 0.6s linear; }
+.music-refresh-btn.spinning {
+    animation: spin 0.6s linear;
+}
 
 @keyframes spin {
-    from { transform: rotate(0deg); }
-    to   { transform: rotate(360deg); }
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 .url-input-row {
@@ -1048,8 +1132,13 @@ html, body {
     transition: border-color 0.2s ease;
 }
 
-.url-input::placeholder { color: rgba(214, 229, 189, 0.35); }
-.url-input:focus { border-color: rgba(142, 196, 228, 0.5); }
+.url-input::placeholder {
+    color: rgba(214, 229, 189, 0.35);
+}
+
+.url-input:focus {
+    border-color: rgba(142, 196, 228, 0.5);
+}
 
 .url-play-btn {
     width: 38px;
@@ -1067,8 +1156,14 @@ html, body {
     box-shadow: 0 2px 10px rgba(184, 160, 224, 0.4);
 }
 
-.url-play-btn:hover { background: #cbbcec; transform: scale(1.06); }
-.url-play-btn:active { transform: scale(0.94); }
+.url-play-btn:hover {
+    background: #cbbcec;
+    transform: scale(1.06);
+}
+
+.url-play-btn:active {
+    transform: scale(0.94);
+}
 
 .music-list {
     list-style: none;
@@ -1083,8 +1178,14 @@ html, body {
     scrollbar-color: rgba(142, 196, 228, 0.3) transparent;
 }
 
-.music-list::-webkit-scrollbar { width: 4px; }
-.music-list::-webkit-scrollbar-thumb { background: rgba(142, 196, 228, 0.3); border-radius: 2px; }
+.music-list::-webkit-scrollbar {
+    width: 4px;
+}
+
+.music-list::-webkit-scrollbar-thumb {
+    background: rgba(142, 196, 228, 0.3);
+    border-radius: 2px;
+}
 
 .music-item {
     display: flex;
@@ -1116,7 +1217,10 @@ html, body {
     white-space: nowrap;
 }
 
-.music-item.playing .music-name { color: #f5f6f7; font-weight: 500; }
+.music-item.playing .music-name {
+    color: #f5f6f7;
+    font-weight: 500;
+}
 
 /* Player */
 .music-player {
@@ -1127,7 +1231,9 @@ html, body {
     border-top: 1px solid rgba(214, 229, 189, 0.1);
 }
 
-.now-playing { text-align: center; }
+.now-playing {
+    text-align: center;
+}
 
 .now-playing-name {
     font-size: 12px;
@@ -1143,7 +1249,8 @@ html, body {
     gap: 8px;
 }
 
-.time-current, .time-total {
+.time-current,
+.time-total {
     font-size: 10px;
     color: rgba(214, 229, 189, 0.6);
     min-width: 30px;
@@ -1358,9 +1465,18 @@ html, body {
     scrollbar-color: rgba(142, 196, 228, 0.3) transparent;
 }
 
-.notes-area::placeholder { color: rgba(214, 229, 189, 0.3); }
-.notes-area::-webkit-scrollbar { width: 4px; }
-.notes-area::-webkit-scrollbar-thumb { background: rgba(142, 196, 228, 0.3); border-radius: 4px; }
+.notes-area::placeholder {
+    color: rgba(214, 229, 189, 0.3);
+}
+
+.notes-area::-webkit-scrollbar {
+    width: 4px;
+}
+
+.notes-area::-webkit-scrollbar-thumb {
+    background: rgba(142, 196, 228, 0.3);
+    border-radius: 4px;
+}
 
 .notes-footer {
     display: flex;
@@ -1434,7 +1550,10 @@ html, body {
     transition: all 0.25s ease;
 }
 
-.bg-card:hover { transform: scale(1.03); border-color: rgba(142, 196, 228, 0.5); }
+.bg-card:hover {
+    transform: scale(1.03);
+    border-color: rgba(142, 196, 228, 0.5);
+}
 
 .bg-card.active {
     border-color: #8ec4e4;
@@ -1621,9 +1740,13 @@ html, body {
 }
 
 .setting-input::-webkit-inner-spin-button,
-.setting-input::-webkit-outer-spin-button { -webkit-appearance: none; }
+.setting-input::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+}
 
-.setting-input:focus { border-color: rgba(142, 196, 228, 0.5); }
+.setting-input:focus {
+    border-color: rgba(142, 196, 228, 0.5);
+}
 
 .setting-unit {
     font-size: 11px;
@@ -1701,13 +1824,13 @@ html, body {
     transition: all 0.3s ease;
 }
 
-.toggle input:checked + .toggle-slider {
+.toggle input:checked+.toggle-slider {
     background: #b8a0e0;
     border-color: #b8a0e0;
     box-shadow: 0 2px 8px rgba(184, 160, 224, 0.4);
 }
 
-.toggle input:checked + .toggle-slider::before {
+.toggle input:checked+.toggle-slider::before {
     transform: translateX(19px);
     background: #1e1338;
 }
@@ -1773,7 +1896,9 @@ html, body {
 }
 
 /* Show handle hint only when hovering the widget */
-.widget:hover .resize-handle { opacity: 1; }
+.widget:hover .resize-handle {
+    opacity: 1;
+}
 
 .resize-handle--bl {
     left: 0;
@@ -1798,25 +1923,313 @@ html, body {
 
 /* Bottom-right: lines go top-left ↘ bottom-right */
 .resize-handle--br::before {
-    width: 10px; height: 2px;
-    bottom: 7px; right: 4px;
+    width: 10px;
+    height: 2px;
+    bottom: 7px;
+    right: 4px;
     transform: rotate(-45deg);
 }
+
 .resize-handle--br::after {
-    width: 6px; height: 2px;
-    bottom: 4px; right: 4px;
+    width: 6px;
+    height: 2px;
+    bottom: 4px;
+    right: 4px;
     transform: rotate(-45deg);
 }
 
 /* Bottom-left: mirror */
 .resize-handle--bl::before {
-    width: 10px; height: 2px;
-    bottom: 7px; left: 4px;
-    transform: rotate(45deg);
-}
-.resize-handle--bl::after {
-    width: 6px; height: 2px;
-    bottom: 4px; left: 4px;
+    width: 10px;
+    height: 2px;
+    bottom: 7px;
+    left: 4px;
     transform: rotate(45deg);
 }
 
+.resize-handle--bl::after {
+    width: 6px;
+    height: 2px;
+    bottom: 4px;
+    left: 4px;
+    transform: rotate(45deg);
+}
+
+/* ============================================================
+   CELEBRATION BURST — fires when timer naturally hits zero
+   Colors: gelato palette (#8ec4e4 blue · #b8a0e0 lavender ·
+           #F9E1A8 gold · #FFDAB4 peach · #FFCBE1 rose · #D6E5BD mint)
+   ============================================================ */
+
+.celeb-spark {
+    position: fixed;
+    pointer-events: none;
+    z-index: 9990;
+    line-height: 1;
+    transform-origin: center center;
+    will-change: transform, opacity;
+    /* duration + travel distance come from per-element CSS vars */
+    animation: celeb-burst var(--dur, 0.85s) cubic-bezier(0.15, 0.5, 0.3, 1) forwards;
+}
+
+@keyframes celeb-burst {
+    0% {
+        transform: translate(0, 0) scale(0.2) rotate(0deg);
+        opacity: 1;
+    }
+
+    18% {
+        /* short "pop" outward before full travel */
+        transform: translate(calc(var(--tx) * 0.18), calc(var(--ty) * 0.18)) scale(1.5) rotate(60deg);
+        opacity: 1;
+    }
+
+    100% {
+        transform: translate(var(--tx), var(--ty)) scale(0.08) rotate(var(--rot));
+        opacity: 0;
+    }
+}
+
+
+/* ============================================================
+   CONFETTI WIDGET
+   ============================================================ */
+
+.widget--confetti {
+    left: calc(50vw - 220px + 34px);
+    top: calc(50vh - 200px);
+    width: 440px;
+}
+
+.confetti-cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    padding: 0;
+}
+
+.confetti-card {
+    border-radius: 16px;
+    background: rgba(0, 0, 0, 0.22);
+    border: 1.5px solid rgba(214, 229, 189, 0.09);
+    overflow: hidden;
+    transition: border-color 0.28s ease, box-shadow 0.28s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.confetti-card.enabled.star-card {
+    border-color: rgba(255, 114, 81, 0.45);
+    box-shadow: 0 0 20px rgba(255, 114, 81, 0.1);
+}
+
+.confetti-card.enabled.bubble-card {
+    border-color: rgba(127, 205, 255, 0.45);
+    box-shadow: 0 0 20px rgba(127, 205, 255, 0.1);
+}
+
+/* ── Preview area ───────────────────────────────────────────── */
+
+.confetti-preview {
+    position: relative;
+    height: 120px;
+    overflow: hidden;
+    /* clips local sparks inside card */
+    cursor: crosshair;
+    border-bottom: 1px solid rgba(214, 229, 189, 0.07);
+    background: linear-gradient(160deg, rgba(255, 255, 255, 0.018) 0%, rgba(0, 0, 0, 0.22) 100%);
+    user-select: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.confetti-preview-icon {
+    font-size: 42px;
+    opacity: 0.13;
+    pointer-events: none;
+    user-select: none;
+    transition: opacity 0.25s ease;
+    filter: blur(0.5px);
+}
+
+.confetti-preview:hover .confetti-preview-icon {
+    opacity: 0.05;
+}
+
+.confetti-preview-hint {
+    position: absolute;
+    bottom: 8px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: rgba(214, 229, 189, 0.28);
+    pointer-events: none;
+    transition: opacity 0.25s ease;
+}
+
+.confetti-preview:hover .confetti-preview-hint {
+    opacity: 0;
+}
+
+/* ── Card footer (name + toggle) ────────────────────────────── */
+
+.confetti-card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 14px 12px;
+    gap: 10px;
+}
+
+.confetti-card-name {
+    font-size: 12px;
+    font-weight: 600;
+    color: rgba(245, 246, 247, 0.72);
+    letter-spacing: 0.2px;
+}
+
+.confetti-card-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.confetti-card-status {
+    font-size: 10px;
+    font-weight: 600;
+    color: rgba(214, 229, 189, 0.28);
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    transition: color 0.25s ease;
+    min-width: 18px;
+}
+
+.confetti-card.enabled .confetti-card-status {
+    color: rgba(214, 229, 189, 0.65);
+}
+
+/* ── Toggle pill ─────────────────────────────────────────────── */
+
+.confetti-pill {
+    width: 36px;
+    height: 20px;
+    border-radius: 10px;
+    background: rgba(214, 229, 189, 0.09);
+    border: 1px solid rgba(214, 229, 189, 0.14);
+    position: relative;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.confetti-pill::after {
+    content: '';
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: rgba(214, 229, 189, 0.38);
+    top: 2px;
+    left: 2px;
+    transition: transform 0.25s ease, background 0.25s ease;
+}
+
+.star-card .confetti-pill.active {
+    background: rgba(255, 114, 81, 0.32);
+    border-color: rgba(255, 114, 81, 0.55);
+    box-shadow: 0 0 10px rgba(255, 114, 81, 0.2);
+}
+
+.bubble-card .confetti-pill.active {
+    background: rgba(127, 205, 255, 0.28);
+    border-color: rgba(127, 205, 255, 0.55);
+    box-shadow: 0 0 10px rgba(127, 205, 255, 0.2);
+}
+
+.confetti-pill.active::after {
+    transform: translateX(16px);
+    background: #f5f6f7;
+}
+
+/* ── Section hint ────────────────────────────────────────────── */
+
+.confetti-section-hint {
+    font-size: 10px;
+    line-height: 1.55;
+    color: rgba(214, 229, 189, 0.3);
+    letter-spacing: 0.2px;
+    text-align: center;
+    margin: 0;
+    padding: 0 6px;
+}
+
+/* ── Local spark — position:absolute so it clips inside preview ─ */
+
+.celeb-spark--local {
+    position: absolute !important;
+}
+
+/* ── Fountain: arc upward then gravity-fall down ───────────────── */
+@keyframes celeb-fountain {
+    0%   { transform: translate(0, 0) rotate(0deg) scale(0.3); opacity: 1; }
+    38%  { transform: translate(var(--tx), var(--ty)) rotate(calc(var(--rot) * 0.4)) scale(1.1); opacity: 1; }
+    100% { transform: translate(calc(var(--tx) * 1.1), var(--ty-land)) rotate(var(--rot)) scale(0.1); opacity: 0; }
+}
+.celeb-spark--fountain {
+    animation: celeb-fountain var(--dur, 2.6s) ease-in forwards !important;
+}
+
+/* ── Ring Pulse: appear at ring edge, pulse then drift out ────── */
+@keyframes celeb-ring {
+    0%   { transform: translate(0, 0) scale(0); opacity: 0; }
+    18%  { transform: translate(0, 0) scale(1.25); opacity: 1; }
+    55%  { transform: translate(0, 0) scale(1); opacity: 1; }
+    100% { transform: translate(var(--tx), var(--ty)) scale(0.15); opacity: 0; }
+}
+.celeb-spark--ring {
+    animation: celeb-ring var(--dur, 2.3s) ease-out forwards !important;
+}
+
+/* ── Rain Down: fall straight down ─────────────────────────────── */
+@keyframes celeb-rain {
+    0%   { transform: translate(0, 0) rotate(0deg) scaleY(1); opacity: 1; }
+    80%  { opacity: 1; }
+    100% { transform: translate(var(--tx), var(--ty)) rotate(var(--rot)) scaleY(0.6); opacity: 0; }
+}
+.celeb-spark--rain {
+    animation: celeb-rain var(--dur, 2.4s) ease-in forwards !important;
+}
+
+/* ── Card enabled border + glow variants ───────────────────────── */
+
+.petal-card.enabled    { border-color: rgba(255, 183, 197, 0.5); box-shadow: 0 0 20px rgba(255, 183, 197, 0.12); }
+.firefly-card.enabled  { border-color: rgba(200, 255, 96,  0.5); box-shadow: 0 0 20px rgba(200, 255, 96,  0.12); }
+.leaf-card.enabled     { border-color: rgba(100, 200, 110, 0.5); box-shadow: 0 0 20px rgba(100, 200, 110, 0.12); }
+.gold-card.enabled     { border-color: rgba(255, 215, 0,   0.5); box-shadow: 0 0 20px rgba(255, 215, 0,   0.12); }
+.aurora-card.enabled   { border-color: rgba(184, 160, 224, 0.5); box-shadow: 0 0 20px rgba(184, 160, 224, 0.14); }
+.emoji-card.enabled    { border-color: rgba(255, 165, 0,   0.5); box-shadow: 0 0 20px rgba(255, 165, 0,   0.12); }
+.fountain-card.enabled { border-color: rgba(100, 210, 255, 0.5); box-shadow: 0 0 20px rgba(100, 210, 255, 0.12); }
+.ring-card.enabled     { border-color: rgba(255, 100, 200, 0.5); box-shadow: 0 0 20px rgba(255, 100, 200, 0.12); }
+.rain-card.enabled     { border-color: rgba(120, 180, 255, 0.5); box-shadow: 0 0 20px rgba(120, 180, 255, 0.12); }
+.cannons-card.enabled  { border-color: rgba(255, 40, 100, 0.5); box-shadow: 0 0 20px rgba(255, 40, 100, 0.12); }
+.fireworks-card.enabled{ border-color: rgba(255, 100, 40,  0.5); box-shadow: 0 0 20px rgba(255, 100, 40,  0.15); }
+
+/* ── Pill active colours for new card types ─────────────────────── */
+.petal-card    .confetti-pill.active { background: rgba(255, 183, 197, 0.3); border-color: rgba(255, 183, 197, 0.6); }
+.firefly-card  .confetti-pill.active { background: rgba(200, 255, 96,  0.26); border-color: rgba(200, 255, 96,  0.6); }
+.leaf-card     .confetti-pill.active { background: rgba(100, 200, 110, 0.26); border-color: rgba(100, 200, 110, 0.6); }
+.gold-card     .confetti-pill.active { background: rgba(255, 215, 0,   0.26); border-color: rgba(255, 215, 0,   0.6); }
+.aurora-card   .confetti-pill.active { background: rgba(184, 160, 224, 0.3);  border-color: rgba(184, 160, 224, 0.6); }
+.emoji-card    .confetti-pill.active { background: rgba(255, 165, 0,   0.26); border-color: rgba(255, 165, 0,   0.6); }
+.fountain-card .confetti-pill.active { background: rgba(100, 210, 255, 0.26); border-color: rgba(100, 210, 255, 0.6); }
+.ring-card     .confetti-pill.active { background: rgba(255, 100, 200, 0.26); border-color: rgba(255, 100, 200, 0.6); }
+.rain-card     .confetti-pill.active { background: rgba(120, 180, 255, 0.26); border-color: rgba(120, 180, 255, 0.6); }
+.cannons-card  .confetti-pill.active { background: rgba(255, 40, 100, 0.26); border-color: rgba(255, 40, 100, 0.6); }
+.fireworks-card .confetti-pill.active{ background: rgba(255, 100, 40,  0.26); border-color: rgba(255, 100, 40,  0.6); }

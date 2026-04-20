@@ -5,7 +5,7 @@ a = Analysis(
     ['run.py'],
     pathex=[],
     binaries=[],
-    datas=[('asset', 'asset'), ('index.html', '.'), ('script.js', '.'), ('timer.js', '.'), ('tasks.js', '.'), ('music.js', '.'), ('sounds.js', '.'), ('notes.js', '.'), ('letter.js', '.'), ('style.css', '.')],
+    datas=[('asset', 'asset'), ('index.html', '.'), ('script.js', '.'), ('timer.js', '.'), ('tasks.js', '.'), ('music.js', '.'), ('sounds.js', '.'), ('notes.js', '.'), ('letter.js', '.'), ('style.css', '.'), ('fireworks.js', '.')],
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},
